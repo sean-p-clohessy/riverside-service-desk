@@ -1,0 +1,42 @@
+.feedback-coaching {
+  font-size: 12px;
+  color: #e0d5ed;
+  margin-top: 12px;
+  padding: 12px;
+  background: #252a3c;
+  border-left: 2px solid #b89afa;
+}
+.feedback-coaching ul,
+.reasoning-criteria {
+  padding-left: 19px;
+  margin: 7px 0 0;
+}
+.feedback-coaching li,
+.reasoning-criteria li {
+  margin: 5px 0;
+}
+.feedback-example {
+  margin-top: 13px;
+  font-size: 12px;
+  padding: 10px 12px;
+  border: 1px solid #496176;
+  border-radius: 4px;
+  background: #192d3b;
+}
+.feedback-example summary {
+  color: #9ee9f3;
+}
+.feedback-example p {
+  margin-top: 10px;
+}
+.field > .reasoning-prompt {
+  font-size: 11px;
+  color: #bacadd;
+  font-weight: 500;
+}
+.reasoning-criteria {
+  font-size: 12px;
+  line-height: 1.6;
+  color: #b9cce0;
+  margin-top: 0;
+}

@@ -22,6 +22,7 @@ export interface Machine {
 }
 export interface ConceptRubric {
   groups: string[][];
+  criteria?: string[];
   guidance: string;
   example: string;
 }

@@ -1,6 +1,7 @@
 import type { ScenarioPack } from "../types.ts";
 import { components } from "./components.ts";
 import { week7Tickets } from "./week7Tickets.ts";
+import { reasoningCriteria } from "./reasoningGuidance.ts";
 
 export const teacherPin = "2707"; // Local convenience control. Public source; NOT authentication.
 export const scenarioPacks: Record<string, ScenarioPack> = {
@@ -33,7 +34,13 @@ export const scenarioPacks: Record<string, ScenarioPack> = {
       },
     ],
     components,
-    tickets: week7Tickets,
+    tickets: week7Tickets.map((ticket, index) => ({
+      ...ticket,
+      reasoningRubric: {
+        ...ticket.reasoningRubric,
+        criteria: reasoningCriteria[index],
+      },
+    })),
   },
 };
 // Register a future pack above, then change this key. UI, progress, library and rubric share the schema.

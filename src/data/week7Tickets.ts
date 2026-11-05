@@ -58,13 +58,37 @@ const authoredWeek7Tickets: Ticket[] = [
     },
     reasoningRubric: {
       groups: [
-        ["running", "open", "active", "multitask", "same time"],
-        ["applications", "programs", "browser", "spreadsheet", "register"],
+        [
+          "running",
+          "open",
+          "active",
+          "multitask",
+          "same time",
+          "current",
+          "using",
+          "in use",
+          "at once",
+          "temporary",
+          "temporarily",
+          "working memory",
+          "working on",
+        ],
+        [
+          "applications",
+          "programs",
+          "browser",
+          "spreadsheet",
+          "register",
+          "data",
+          "information",
+          "instructions",
+          "work",
+        ],
       ],
       guidance:
-        "Link working memory to the applications open at the same time.",
+        "Explain why RAM fits Amira’s request: it holds the work her applications are using now. You do not need to name every application or recommend an upgrade.",
       example:
-        "The browser and spreadsheet are running together, so their active data is held in RAM.",
+        "Amira has several applications open. RAM holds the data they are using right now.",
     },
     actions: [
       {

@@ -5,6 +5,7 @@ import type {
   ScenarioPack,
   Ticket,
   TicketProgress,
+  ConceptRubric,
 } from "../types.ts";
 
 export const emptyDiagnosis = (): Diagnosis => ({
@@ -84,25 +85,45 @@ export function shuffle<T>(items: T[]): T[] {
   }
   return result;
 }
-export function matchesConcepts(value: string, groups: string[][]): boolean {
-  const normal = value
+function normaliseConcept(value: string): string {
+  return value
     .toLowerCase()
     .replace(/[^a-z0-9\s]/g, " ")
+    .replace(
+      /\b(?:applications?|apps?|programs?|programmes?|software)\b/g,
+      "app",
+    )
+    .replace(/\b(?:connections?|connectors?)\b/g, "connect")
+    .replace(/\bslots?\b/g, "slot")
     .replace(/\s+/g, " ")
     .trim();
-  if (normal.length < 16) return false;
-  // These are key-idea checks, not natural-language assessment. Negated key ideas are excluded.
-  const withoutNegation = normal.replace(
-    /\b(?:not|never|cannot|doesn t|isn t|can t|no)\b[^.!?;]*?(?=\bbut\b|$)/g,
-    "",
-  );
-  return groups.every((group) =>
-    group.some((term) =>
-      new RegExp(`\\b${term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`).test(
-        withoutNegation,
+}
+export function conceptChecks(value: string, groups: string[][]): boolean[] {
+  // Keep sentence boundaries until negative clauses have been removed.
+  const positive = value
+    .toLowerCase()
+    .replace(/[’]/g, "'")
+    .replace(
+      /\b(?:not|never|cannot|doesn't|isn't|can't|don't|no)\b[^.!?;,\n]*?(?=\bbut\b|[.!?;,\n]|$)/g,
+      " ",
+    );
+  const normal = normaliseConcept(positive);
+  return groups.map(
+    (group) =>
+      value.trim().length >= 16 &&
+      group.some((term) =>
+        new RegExp(
+          `\\b${normaliseConcept(term).replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`,
+        ).test(normal),
       ),
-    ),
   );
+}
+export function matchesConcepts(value: string, groups: string[][]): boolean {
+  return conceptChecks(value, groups).every(Boolean);
+}
+export function missingIdeas(value: string, rubric: ConceptRubric): string[] {
+  const checks = conceptChecks(value, rubric.groups);
+  return (rubric.criteria ?? []).filter((_, index) => !checks[index]);
 }
 export function evaluate(
   ticket: Ticket,

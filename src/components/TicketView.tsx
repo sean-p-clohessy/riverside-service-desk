@@ -22,7 +22,7 @@ import type {
   Ticket,
   TicketProgress,
 } from "../types.ts";
-import { emptyProgress, submit } from "../lib/engine.ts";
+import { emptyProgress, submit, missingIdeas } from "../lib/engine.ts";
 import Workstation, { ComponentIcon } from "./Workstation.tsx";
 
 type Props = {
@@ -451,6 +451,10 @@ export default function TicketView({
                     text: attempt.functionCorrect
                       ? "The key function ideas are present."
                       : ticket.functionRubric.guidance,
+                    example:
+                      !attempt.functionCorrect && attempt.componentCorrect
+                        ? ticket.functionRubric.example
+                        : undefined,
                   },
                   {
                     title: "Ticket reasoning",
@@ -458,6 +462,13 @@ export default function TicketView({
                     text: attempt.reasoningCorrect
                       ? "Your reasoning includes the relevant key ideas."
                       : ticket.reasoningRubric.guidance,
+                    missing: !attempt.reasoningCorrect
+                      ? missingIdeas(attempt.reasoning, ticket.reasoningRubric)
+                      : [],
+                    example:
+                      !attempt.reasoningCorrect && attempt.componentCorrect
+                        ? ticket.reasoningRubric.example
+                        : undefined,
                   },
                   {
                     title: "Recommended next step",
@@ -481,6 +492,23 @@ export default function TicketView({
                       </span>
                     </div>
                     <p>{row.text}</p>
+                    {row.missing?.length ? (
+                      <div className="feedback-coaching">
+                        <strong>To improve your answer:</strong>
+                        <ul>
+                          {row.missing.map((idea) => (
+                            <li key={idea}>{idea}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    ) : null}
+                    {row.example && (
+                      <details className="feedback-example">
+                        <summary>See one example</summary>
+                        <p>{row.example}</p>
+                        <p>You can explain the same idea in your own words.</p>
+                      </details>
+                    )}
                   </div>
                 ))}
                 {attempt.resolved ? (
@@ -577,8 +605,20 @@ export default function TicketView({
                     rows={3}
                     value={p.draft.reasoning}
                     onChange={(e) => draft({ reasoning: e.target.value })}
-                    placeholder="Use something from the user report or evidence…"
+                    placeholder="This component fits because the user…"
                   />
+                  <span className="reasoning-prompt">
+                    Use these ideas to explain your decision:
+                  </span>
+                  <ul className="reasoning-criteria">
+                    {(
+                      ticket.reasoningRubric.criteria ?? [
+                        ticket.reasoningRubric.guidance,
+                      ]
+                    ).map((idea) => (
+                      <li key={idea}>{idea}</li>
+                    ))}
+                  </ul>
                 </label>
                 <fieldset>
                   <legend>

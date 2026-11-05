@@ -5,6 +5,7 @@ import "./styles.css";
 import "./layout.css";
 import "./catalog.css";
 import "./readability.css";
+import "./feedback.css";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
