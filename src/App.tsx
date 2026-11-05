@@ -610,19 +610,35 @@ export default function App() {
               {profiles.length > 0 && (
                 <div className="profile-list">
                   {profiles.map((p) => (
-                    <button key={p.id} onClick={() => begin(p)}>
-                      <span className="avatar">
-                        {p.name.slice(0, 2).toUpperCase()}
-                      </span>
-                      <span>
-                        <strong>{p.name}</strong>
-                        <small>
-                          {stats(p, pack).resolved} tickets completed ·{" "}
-                          {stats(p, pack).score} points
-                        </small>
-                      </span>
-                      <ChevronRight size={18} />
-                    </button>
+                    <div className="profile-row" key={p.id}>
+                      <button
+                        className="profile-select"
+                        onClick={() => begin(p)}
+                      >
+                        <span className="avatar">
+                          {p.name.slice(0, 2).toUpperCase()}
+                        </span>
+                        <span>
+                          <strong>{p.name}</strong>
+                          <small>
+                            {stats(p, pack).resolved} tickets completed ·{" "}
+                            {stats(p, pack).score} points
+                          </small>
+                        </span>
+                        <ChevronRight size={18} />
+                      </button>
+                      <button
+                        className="profile-reset"
+                        aria-label={`Reset Shift for ${p.name}`}
+                        onClick={() => {
+                          begin(p);
+                          setConfirm("reset");
+                        }}
+                      >
+                        <RotateCcw size={14} />
+                        Reset Shift
+                      </button>
+                    </div>
                   ))}
                 </div>
               )}

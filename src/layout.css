@@ -139,7 +139,7 @@
   max-height: 300px;
   overflow: auto;
 }
-.profile-list > button {
+.profile-list .profile-select {
   padding: 13px;
   background: #1d2639;
   border: 1px solid #3c4761;
@@ -149,11 +149,11 @@
   gap: 12px;
   text-align: left;
 }
-.profile-list > button:hover {
+.profile-list .profile-select:hover {
   border-color: #ab6489;
   background: #302338;
 }
-.profile-list > button > span:nth-child(2) {
+.profile-list .profile-select > span:nth-child(2) {
   display: flex;
   flex-direction: column;
   flex: 1;

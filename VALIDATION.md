@@ -6,8 +6,8 @@ Local validation and the deployed public GitHub Pages application passed the che
 
 **Source:** https://github.com/sean-p-clohessy/riverside-service-desk
 
-**Verified application commit:** `eb373e533e17d95b4797152199522ac849aec9cf`.
-The subsequent documentation commit does not change the application bundle.
+**Full-workflow baseline:** `eb373e533e17d95b4797152199522ac849aec9cf`.
+A final UI follow-up adds direct Reset Shift controls to the startup profile chooser. Its confirmation, cancellation and isolation were separately verified; the learning engine and ticket content remain the tested baseline. The latest published revision is visible in the repository’s [Pages deployment runs](https://github.com/sean-p-clohessy/riverside-service-desk/actions/workflows/deploy.yml).
 
 | Check | Evidence / result |
 | --- | --- |
@@ -20,7 +20,7 @@ The subsequent documentation commit does not change the application bundle.
 | Final totals | 12 resolved, 13 submissions, 1 hint, 153 points, 92% first-attempt accuracy. |
 | Refresh persistence | Resolved feedback, evidence, draft component/function selections and technician notes survived normal refresh. |
 | Separate local profiles | Sarah and Jack on the same browser had separate records, notes, scores and tickets. Jack started at 0 points. |
-| Reset / delete | Cancel and confirm tested. Resetting Jack cleared his shift; deleting him removed only his profile. Sarah’s completed record remained unchanged. |
+| Reset / delete | Cancel and confirm tested. Resetting Jack cleared his shift; deleting him removed only his profile. Sarah’s completed record remained unchanged. Direct startup Reset Shift also tested: cancel preserves the score; confirm clears only the chosen profile. |
 | Export / import | JSON download completed. Import restored 12 tickets. Keep-both created a distinct ID; explicit replacement restored the original; malformed profile rejected without overwriting. |
 | Major pages | Dashboard, Ticket Queue, My Tickets, Component Library, Performance, Session Report, all investigation tabs and profile dialogs inspected. Library contained 10 references; search worked. |
 | Report | Original attempts, explanations, feedback, notes, strengths and review areas present. Clipboard summary read back successfully; Chromium generated an A4 print PDF. Print styling visually inspected. |
