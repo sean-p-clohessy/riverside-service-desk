@@ -1,6 +1,13 @@
 # Release validation — 5 November 2026
 
-Local validation passed before the first deployment. Live Pages verification is recorded below once deployment completes.
+Local validation and the deployed public GitHub Pages application passed the checks below.
+
+**Public application:** https://sean-p-clohessy.github.io/riverside-service-desk/
+
+**Source:** https://github.com/sean-p-clohessy/riverside-service-desk
+
+**Verified application commit:** `eb373e533e17d95b4797152199522ac849aec9cf`.
+The subsequent documentation commit does not change the application bundle.
 
 | Check | Evidence / result |
 | --- | --- |
@@ -23,6 +30,17 @@ Local validation passed before the first deployment. Live Pages verification is 
 | Source hygiene | No runtime localhost URLs, TODO content or remote assets in app source. QA exports and screenshots are ignored and are not shipped. |
 
 Detailed QA screenshots, snapshots, browser scripts, test exports and the print PDF are kept locally under the ignored `output/playwright/` folder. They contain synthetic QA profiles only.
+
+## Live GitHub Pages validation
+
+- [GitHub Actions run 41994590000](https://github.com/sean-p-clohessy/riverside-service-desk/actions/runs/41994590000): build and deployment both succeeded. GitHub Pages was enabled through the API with `build_type: workflow`; there is no manual setting left to change.
+- Opened the public URL in two fresh task-owned Chromium browsers with no GitHub authentication. Both initially showed a fresh check-in screen; local development profiles were absent.
+- In the first public browser, Sarah completed tickets 1–3 through the actual production interface. Ticket 1 included an incorrect submission, hint and successful retry; CPU and motherboard were correct on attempt 1. Result: **3 resolved, 36 points, 67% first-attempt accuracy**. Tier 2 unlocked; Tier 3 stayed locked.
+- Production machine tabs, diagram selection, evidence collection, notes, all six major pages, clipboard evidence summary and JSON download worked. Refreshing a ticket hash and the report hash retained the profile, feedback, notes and score.
+- In the independent public browser, Jack remained at **0 points with no assigned or completed tickets** after Sarah’s actions. Only explicitly importing Sarah’s downloaded JSON created her profile there. Her three tickets, 36 points and original notes restored; Jack still had 0 points.
+- Verified the production JavaScript, CSS and favicon each returned **HTTP 200**, all under `/riverside-service-desk/`. Normal hash refresh required no URL rewriting. No external application service is used and no learner progress is submitted over the network.
+- Repeated desktop/tablet/phone layout and keyboard checks against the public site. No page overflow; keyboard tab and component selection, mobile profile access and modal Escape passed.
+- Production browser consoles: **0 errors, 0 warnings**. Network observations contained static GET requests only; no learner-data POST requests or tracking endpoints.
 
 ## Limits of the evidence
 
