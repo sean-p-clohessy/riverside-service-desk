@@ -91,7 +91,7 @@ function normaliseConcept(value: string): string {
     .replace(/[^a-z0-9\s]/g, " ")
     .replace(
       /\b(?:applications?|apps?|programs?|programmes?|software)\b/g,
-      "app",
+      "application",
     )
     .replace(/\b(?:connections?|connectors?)\b/g, "connect")
     .replace(/\bslots?\b/g, "slot")

@@ -13,6 +13,7 @@ test("ticket 1 accepts ordinary Level 2 reasoning without demanding application 
     assert.equal(matchesConcepts(text, rubric.groups), true, text);
   for (const text of [
     "RAM is the best part of the computer.",
+    "It is currently an appropriate component.",
     "It stores all her files permanently.",
     "RAM does not hold the data the applications are currently using.",
   ])
