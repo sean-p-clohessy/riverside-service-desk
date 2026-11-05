@@ -1,0 +1,47 @@
+.page-heading h1,
+.ticket-title h1 {
+  overflow-wrap: anywhere;
+}
+/* Learning text remains readable at ordinary desktop zoom. */
+.library-card > p {
+  font-size: 13px;
+}
+.library-card > h3 {
+  font-size: 12px;
+}
+.misconception p {
+  font-size: 12px;
+}
+.diagnosis-form .field > span {
+  font-size: 13px;
+}
+.diagnosis-form .field textarea {
+  font-size: 14px;
+}
+.action-choices label {
+  font-size: 12px;
+}
+.component-choice {
+  font-size: 12px;
+}
+.feedback-row > div {
+  font-size: 12px;
+}
+.feedback-row p {
+  font-size: 12px;
+}
+.tab-content > .small {
+  font-size: 12px;
+}
+.evidence-source p {
+  font-size: 13px;
+}
+.component-detail {
+  font-size: 13px;
+}
+.component-detail .small {
+  font-size: 12px;
+}
+.machine-spec > div {
+  font-size: 13px;
+}

@@ -1,0 +1,49 @@
+name: Deploy Riverside to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v7
+      - name: Install Node LTS
+        uses: actions/setup-node@v7
+        with:
+          node-version: lts/*
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Check learning engine and progress integrity
+        run: npm test
+      - name: Build production site
+        run: npm run build
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v6
+      - name: Upload production site
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy Pages artifact
+        id: deployment
+        uses: actions/deploy-pages@v5

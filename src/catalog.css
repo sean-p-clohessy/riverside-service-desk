@@ -1,0 +1,42 @@
+.inspection-catalog {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 22px 0;
+}
+.inspection-catalog > button,
+.inspection-catalog > div {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  min-height: 80px;
+  padding: 17px;
+  background: #1c2c3d;
+  border: 1px solid #48617b;
+  border-radius: 5px;
+  color: #cbe8f4;
+  text-align: left;
+  font-size: 13px;
+}
+.inspection-catalog > button:hover {
+  background: #2a4055;
+}
+.inspection-catalog > button.selected {
+  border-color: #ff629f;
+  background: #3c2940;
+  color: #ffe4f0;
+}
+.brief-visual .inspection-catalog,
+.start-story > .inspection-catalog {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
+}
+.brief-visual .inspection-catalog > div {
+  padding: 10px;
+  min-height: 45px;
+  font-size: 8px;
+}
+.brief-visual .inspection-catalog svg {
+  width: 14px;
+  height: 14px;
+}
