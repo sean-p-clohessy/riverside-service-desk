@@ -6,6 +6,7 @@ import "./layout.css";
 import "./catalog.css";
 import "./readability.css";
 import "./feedback.css";
+import "./week8.css";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>

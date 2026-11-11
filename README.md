@@ -1,6 +1,9 @@
 # Riverside Service Desk
 
-A browser-only learning helpdesk for Level 2 Digital Technologies. Twelve complete Week 7 tickets teach workstation components through investigation, evidence, explanations and recommendations. A fictional Riverside College service, supporting Technical Support unit J/618/3687.
+A browser-only learning helpdesk for Gateway Level 2 IT Technical Support (J/618/3687).
+
+- [Week 8 · Peripherals](https://sean-p-clohessy.github.io/riverside-service-desk/#week-8/explore) opens the desk with 12 device references, 15 connection references, six connection checks and eight paired investigations. The [90-minute lesson](https://sean-p-clohessy.github.io/riverside-service-desk/#week-8/lesson) ends with an individual comparison in the session report.
+- [Week 7 · Inside the Workstation](https://sean-p-clohessy.github.io/riverside-service-desk/#week-7/dashboard) contains the archived diagram and all 12 original tickets.
 
 [Open the public application](https://sean-p-clohessy.github.io/riverside-service-desk/) · [Source repository](https://github.com/sean-p-clohessy/riverside-service-desk)
 
@@ -20,15 +23,15 @@ Open the address Vite prints, including `/riverside-service-desk/`. Production o
 
 ## Learner workflow
 
-Start or choose a named local profile. Open a ticket to assign it; read the report and specification, inspect the interactive PC, gather evidence and save notes. Submit component selections, a function explanation, evidence-based reasoning and a next step. Resolve each tier to unlock the next. The library contains ten complete component references.
+Start or choose a local profile. Open a ticket to assign it. Read the report and specification, inspect the equipment, gather evidence and save notes. Submit a hardware choice, function explanation, evidence-based reasoning and next step. Week 7 unlocks tickets in tiers. All Week 8 requests are available for pairs to choose.
 
 The best attempt per ticket counts: component identification earns 5/3/1 points on successive attempts, function 3, reasoning 3, next step 2, minus 1 per hint. A ticket resolves when all four checks pass. Written feedback checks key ideas locally; tutors should review the original responses. It is not an official assessment result.
 
 ## Local profiles and portability
 
-Progress is stored only in the learner’s browser, separately for each profile under `riverside.service-desk.v1.profile.<id>`. Refresh retains the current shift. Other browsers/devices start independently. Profiles and the teacher PIN are conveniences, not authentication or privacy boundaries on a shared browser.
+One local profile opens both weeks. Each week stores its own tickets, notes and score. The Week 7 record retains its original storage key, and its old bookmarks and JSON exports still work. Refresh retains the current week and session.
 
-Use **Local profile & progress** to switch/create technicians, export/import JSON, reset a shift or delete a profile. Reset and deletion require confirmation and affect only the active profile. Conflicting imports offer keep-both or explicit replacement; invalid files are rejected. Export before leaving a shared/managed PC because browser policies may clear storage.
+Use **Local profile & progress** to switch technicians, export or import JSON, reset a shift or delete a profile. Reset and export apply to the selected week. Deleting a profile removes its work across both weeks after confirmation. Import opens the week identified in the file.
 
 The **Session Report** includes all attempts, explanations, outcomes, notes, strengths and review areas. Copy a portfolio summary, export JSON, or use **Print / Save as PDF**.
 

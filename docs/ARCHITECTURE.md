@@ -1,6 +1,6 @@
 # Riverside Service Desk
 
-A fictional Riverside College IT helpdesk for Level 2 Technical Support learners. Week 7, **Inside the Workstation**, supports component identification, explanation and reasoned recommendations for unit J/618/3687. It is a learning resource, not an official assessment or college service.
+A fictional Riverside College helpdesk for Level 2 IT Technical Support (J/618/3687). Week 7 covers internal hardware. Week 8 links peripherals and ports to internal hardware through device inspection, connection checks and paired investigations.
 
 ## Run
 
@@ -26,11 +26,11 @@ Written feedback uses transparent key-idea rules, not AI or a claim of human mar
 
 ## Local progress and privacy
 
-Each profile has a generated ID, name and separate `localStorage` record under `riverside.service-desk.v1.profile.<id>`. Records contain drafts, notes, collected evidence, attempts, scores, completed and unlocked tickets, teacher settings, component encounters and statistics. Nothing writes learner progress to GitHub or another service. GitHub serves static files and may retain its normal hosting request logs; the application adds no tracking.
+Each learner keeps one ID across weeks. Week 7 keeps the original `riverside.service-desk.v1.profile.<id>` key. Later weeks use `riverside.service-desk.v1.profile.<pack-id>.<id>`. Opening another week prepares a new record when needed. Each record holds the week’s drafts, notes, evidence, attempts, scores and settings. Week 8 also keeps completed connection checks and the comparison response. Learner records stay in browser storage.
 
 The active profile ID is kept in `sessionStorage` so refreshing the same tab resumes the shift. A fresh tab/start offers saved profiles. Multiple profiles on a shared browser are conveniences, **not private or authenticated accounts**. Two browsers/devices have independent storage. If two people need to work at the same time on the same computer, use separate browser profiles. Tabs on the same browser synchronise local changes. Private browsing, managed college policies or clearing site data can remove progress; export a JSON backup before leaving.
 
-Use **Local profile & progress** for switch/new technician, export, import, reset and deletion. Reset clears only the active shift. Delete removes only the selected local profile. Both require confirmation and offer export first. Imports validate the file format, active pack, known fields, IDs, allowed values and size (2 MB maximum). An ID/name conflict asks whether to keep both or explicitly replace the existing profile. Invalid files cannot overwrite stored data. Corrupt local records are left untouched, with a visible warning. A storage/quota failure is shown and an in-memory shift remains exportable.
+Use **Local profile & progress** to switch technicians, export or import the selected week, reset a shift or delete a profile. Reset clears the selected week. Delete clears the selected learner’s records in both weeks. Imports validate version 1 JSON against the pack named in the file and prompt before replacing existing work in that week. Both operations provide an export option before confirmation.
 
 The Session Report retains every submitted attempt and its feedback, the next step, gathered evidence and notes. Use **Copy Evidence Summary**, **Export Progress**, or **Print / Save as PDF** (browser print). The plain-text summary is selectable if clipboard access is blocked.
 
@@ -44,6 +44,8 @@ Default local PIN: **2707**, configured in `src/data/config.ts`. This is public 
 - `src/data/config.ts`: pack registry, active pack ID, teacher PIN and tier descriptions.
 - `src/data/week7Tickets.ts`: all twelve tickets, machine specifications, evidence, correct component sets, function/reasoning key-idea groups, action choices, hints and feedback.
 - `src/data/components.ts`: the complete ten-component reference library.
+- `src/data/week8Lab.ts`: peripheral, port, practice and lesson content, with links to UK price sources.
+- `src/data/week8Tickets.ts`: paired investigations and their rubrics.
 - `src/lib/engine.ts`: progression, rubric checks, scoring, reporting and statistics.
 - `src/lib/storage.ts`: local persistence and validated export/import.
 - `src/components/`: ticket workflow, report and keyboard-accessible workstation.
@@ -57,3 +59,19 @@ The project uses GitHub Actions in `.github/workflows/deploy.yml`, triggered by 
 `vite.config.ts` uses `/riverside-service-desk/`, corresponding to this project’s origin repository. If moving to a different repository, use `/<actual-repository-name>/`; a `USERNAME.github.io` root repository uses `/`. Keep hash navigation. No server, database or environment secrets are required.
 
 Deployment guidance follows the [Vite Pages guide](https://vite.dev/guide/static-deploy.html#github-pages) and [GitHub’s custom Pages workflow documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages). See `VALIDATION.md` for the checks performed for this release.
+
+## Week 8 illustrations
+
+The built-in ImageGen tool produced both illustrations. The site ships JPEG copies. The device pictures illustrate the equipment types, and each price links to a named product example.
+
+### Desk image
+
+Saved in [public/media/week8/desk.jpg](../public/media/week8/desk.jpg).
+
+> Create a photorealistic educational illustration for an interactive British college IT service desk, landscape 3:2. Orthographic near top-down view, angled just enough to see the monitor screen, tidy midnight-navy workbench, well-lit neutral grey gear, gentle teal reflections, overhead soft lighting, crisp authentic shapes, premium product photography. Include exactly these distinct objects with lots of empty dark space between them so each is an obvious selectable target: a black 24-inch monitor showing a blank deep teal screen centred in upper-middle around (48%,32%); one small clip-on webcam centred on its top edge around (48%,10%); a full-size wired keyboard below the display around (43%,72%); a wired optical mouse to the keyboard's right around (69%,74%); black padded wired over-ear headset with boom microphone to the left around (14%,51%); one compact stereo computer speaker around (19%,22%); a short desktop USB condenser microphone on a small stand around (83%,55%); a compact matte-black home inkjet printer with a white sheet at the far right around (85%,23%); a small grey external portable SSD near (82%,81%). Objects have clean silhouette boundaries and generous gaps. Show dark desk surface edge to edge, no hands, no people, no extra electronics, no laptop, no PC tower, no visible brands, no printed or screen text, no logos, no markings, no interface, no numbered pins or overlays. Balanced product-photo composition, all gear fully within image edges.
+
+### Peripheral reference images
+
+Saved in [public/media/week8/peripherals.jpg](../public/media/week8/peripherals.jpg).
+
+> A single square sprite atlas of exactly 16 distinct generic computer hardware product photographs, strict 4 columns by 4 rows equal cells, 4x4, centered objects each fully contained in their square with at least 12% empty padding on every side, all backgrounds exactly flat dark midnight navy #111925 across the entire image, no grid marks, no borders, no text, no logos, no people, no labels, no extra items. Consistent premium British IT lab catalogue studio lighting, neutral black/grey objects with clean accurate silhouettes, slight 3/4 view, low soft shadows, true product forms; screens show only solid dark blue. Order left to right: ROW 1 full-size wired keyboard, wired optical mouse, flatbed document scanner with lid slightly open, desktop USB condenser microphone with small stand. ROW 2 clip-on webcam with lens, compact inkjet printer with blank sheet, 24-inch desktop monitor on stand, pair of small stereo PC speakers. ROW 3 flat widescreen smart TV with feet, desktop touchscreen on angled stand, over-ear USB headset with boom microphone, small rectangular portable USB solid-state drive. ROW 4 USB hub, USB flash drive, wired games joystick, low-profile external optical DVD drive. Critical: strict equally sized 4-by-4 tile layout, each object centered at x=12.5/37.5/62.5/87.5% and y=12.5/37.5/62.5/87.5%, clear visual separation with 12% padding. Device bodies should be well lit and legible on navy.

@@ -144,6 +144,20 @@ export default function Report({
           </p>
         </section>
       </div>
+      {pack.practiceIds && (
+        <section className="panel padded lab-comparison-evidence">
+          <h3>Week 8 practice evidence</h3>
+          <p>
+            Connection checks passed {profile.practice?.passed.length ?? 0} of{" "}
+            {pack.practiceIds.length}.
+          </p>
+          <h4>Individual comparison</h4>
+          <p>
+            {profile.practice?.comparison.trim() ||
+              "Open Lesson & evidence to write your comparison."}
+          </p>
+        </section>
+      )}
       <div className="section-heading">
         <h2>Ticket evidence</h2>
         <span className="small muted">

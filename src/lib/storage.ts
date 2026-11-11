@@ -9,6 +9,11 @@ import { syncProgress } from "./engine.ts";
 
 export const PROFILE_PREFIX = "riverside.service-desk.v1.profile.";
 export const ACTIVE_KEY = "riverside.service-desk.v1.active";
+export const originalPackId = "week7-workstation";
+export function profileKey(id: string, packId: string) {
+  const weekPrefix = packId === originalPackId ? "" : `${packId}.`;
+  return `${PROFILE_PREFIX}${weekPrefix}${id}`;
+}
 const record = (v: unknown): v is Record<string, unknown> =>
   !!v && typeof v === "object" && !Array.isArray(v);
 const str = (v: unknown, max = 6000): v is string =>
@@ -72,6 +77,20 @@ export function validateProfile(value: unknown, pack: ScenarioPack): Profile {
     Object.keys(v.tickets).some((id) => !ticketIds.includes(id))
   )
     return fail();
+  let practice: Profile["practice"];
+  if (pack.practiceIds) {
+    if (v.practice === undefined) practice = { passed: [], comparison: "" };
+    else if (
+      record(v.practice) &&
+      strings(v.practice.passed, pack.practiceIds) &&
+      str(v.practice.comparison)
+    ) {
+      practice = {
+        passed: [...v.practice.passed],
+        comparison: v.practice.comparison,
+      };
+    } else return fail();
+  }
   const readDiagnosis = (d: unknown, actions: string[]): Diagnosis => {
     if (
       !record(d) ||
@@ -147,7 +166,7 @@ export function validateProfile(value: unknown, pack: ScenarioPack): Profile {
     };
   }
   // Copy known fields only. Imported objects never become executable HTML or property paths.
-  return syncProgress(
+  const profile = syncProgress(
     {
       schemaVersion: 1,
       id: v.id,
@@ -159,6 +178,7 @@ export function validateProfile(value: unknown, pack: ScenarioPack): Profile {
       tickets,
       order: [...v.order],
       inspected: [...v.inspected],
+      ...(practice ? { practice } : {}),
       unlockedTickets: [...v.unlockedTickets],
       settings: {
         unlockAll: v.settings.unlockAll as boolean,
@@ -174,6 +194,7 @@ export function validateProfile(value: unknown, pack: ScenarioPack): Profile {
     },
     pack,
   );
+  return { ...profile, updatedAt: v.updatedAt };
 }
 export function readProfiles(pack: ScenarioPack): {
   profiles: Profile[];
@@ -190,7 +211,7 @@ export function readProfiles(pack: ScenarioPack): {
         // Other scenario packs are left untouched and appear when that pack is active.
         if (record(raw) && raw.packId !== pack.id) continue;
         const p = validateProfile(raw, pack);
-        if (key !== PROFILE_PREFIX + p.id)
+        if (key !== profileKey(p.id, p.packId))
           throw new Error("Profile key mismatch");
         profiles.push(p);
       } catch {
@@ -207,18 +228,33 @@ export function readProfiles(pack: ScenarioPack): {
     warning,
   };
 }
+export function readCourseProfiles(packs: readonly ScenarioPack[]) {
+  const weeks = packs.map(readProfiles);
+  return {
+    profiles: weeks
+      .flatMap((week) => week.profiles)
+      .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)),
+    warning: weeks.find((week) => week.warning)?.warning ?? "",
+  };
+}
 export function saveProfile(profile: Profile): boolean {
   try {
-    localStorage.setItem(PROFILE_PREFIX + profile.id, JSON.stringify(profile));
+    localStorage.setItem(
+      profileKey(profile.id, profile.packId),
+      JSON.stringify(profile),
+    );
     return true;
   } catch {
     return false;
   }
 }
-export function deleteProfile(id: string) {
-  localStorage.removeItem(PROFILE_PREFIX + id);
+export function deleteProfile(id: string, packId = originalPackId) {
+  localStorage.removeItem(profileKey(id, packId));
 }
-export function parseImport(text: string, pack: ScenarioPack): Profile {
+export function parseImport(
+  text: string,
+  packs: ScenarioPack | readonly ScenarioPack[],
+): Profile {
   if (text.length > 2_000_000)
     throw new Error("Progress files must be smaller than 2 MB.");
   let value: unknown;
@@ -235,6 +271,13 @@ export function parseImport(text: string, pack: ScenarioPack): Profile {
     value.version !== 1
   )
     throw new Error("Select a Riverside progress export (version 1).");
+  const incomingPackId = record(value.profile) ? value.profile.packId : null;
+  const pack =
+    "id" in packs
+      ? packs
+      : packs.find((candidate) => candidate.id === incomingPackId);
+  if (!pack)
+    throw new Error("This progress file is for an unavailable Riverside week.");
   return validateProfile(value.profile, pack);
 }
 export function exportProgress(profile: Profile) {
@@ -256,7 +299,7 @@ export function exportProgress(profile: Profile) {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = `riverside-${profile.name.replace(/[^a-z0-9]/gi, "-").slice(0, 40)}-${new Date().toISOString().slice(0, 10)}.json`;
+  a.download = `riverside-${profile.packId}-${profile.name.replace(/[^a-z0-9]/gi, "-").slice(0, 40)}-${new Date().toISOString().slice(0, 10)}.json`;
   a.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }

@@ -24,6 +24,7 @@ import type {
 } from "../types.ts";
 import { emptyProgress, submit, missingIdeas } from "../lib/engine.ts";
 import Workstation, { ComponentIcon } from "./Workstation.tsx";
+import { peripherals } from "../data/week8Lab.ts";
 
 type Props = {
   ticket: Ticket;
@@ -34,6 +35,7 @@ type Props = {
   next: () => void;
   teacher: boolean;
   showAnswers: boolean;
+  onExplore?: () => void;
 };
 const tabs = [
   { name: "User Report", Icon: MessageSquare },
@@ -51,6 +53,7 @@ export default function TicketView({
   next,
   teacher,
   showAnswers,
+  onExplore,
 }: Props) {
   const p = profile.tickets[ticket.id] ?? emptyProgress();
   const [tab, setTab] = useState("User Report"),
@@ -60,6 +63,15 @@ export default function TicketView({
   const attempt = p.attempts.at(-1);
   const showFeedback = !!attempt && !editing;
   const selected = pack.components.find((c) => c.id === part);
+  const pairGroups = onExplore && [
+    { label: "Peripheral outside the case", options: peripherals },
+    {
+      label: "Component inside the case",
+      options: pack.components.filter(
+        (part) => !peripherals.some((device) => device.id === part.id),
+      ),
+    },
+  ];
   useEffect(() => {
     setTab("User Report");
     setPart(undefined);
@@ -93,8 +105,10 @@ export default function TicketView({
         <div>
           <div className="eyebrow">
             <span className="mono">{ticket.id.toUpperCase()}</span>
-            <span> / </span>TIER {ticket.tier} ·{" "}
-            {pack.tiers[ticket.tier - 1].name.toUpperCase()}
+            <span> / </span>
+            {onExplore
+              ? "PAIR INVESTIGATION"
+              : `TIER ${ticket.tier} · ${pack.tiers[ticket.tier - 1].name.toUpperCase()}`}
           </div>
           <h1>{ticket.title}</h1>
           <p>{ticket.summary}</p>
@@ -197,8 +211,9 @@ export default function TicketView({
                   <div className="info-strip">
                     <FileSearch size={18} />
                     <span>
-                      Check the machine, inspect the components and gather
-                      evidence before submitting.
+                      {onExplore
+                        ? "The technician traces the peripheral into the PC. The verifier checks the connection and proposes a test. Swap roles on the next request."
+                        : "Check the machine, inspect the components and gather evidence before submitting."}
                     </span>
                   </div>
                   <button
@@ -228,6 +243,14 @@ export default function TicketView({
                       ["GPU", ticket.machine.gpu],
                       ["PSU", ticket.machine.psu],
                       ["Operating system", ticket.machine.os],
+                      ...(ticket.machine.connections
+                        ? [
+                            [
+                              "Available connections",
+                              ticket.machine.connections,
+                            ],
+                          ]
+                        : []),
                     ].map(([label, value]) => (
                       <div key={label}>
                         <dt>{label}</dt>
@@ -243,7 +266,7 @@ export default function TicketView({
                     className="button secondary"
                     onClick={() => setTab("Inspect Workstation")}
                   >
-                    Inspect workstation
+                    {onExplore ? "Inspect components" : "Inspect workstation"}
                     <ArrowRight size={16} />
                   </button>
                 </>
@@ -259,6 +282,15 @@ export default function TicketView({
                     Select a labelled component to inspect its role. Use Tab to
                     reach components.
                   </p>
+                  {onExplore && (
+                    <button
+                      className="button secondary"
+                      type="button"
+                      onClick={onExplore}
+                    >
+                      Open the peripherals lab <ArrowRight size={15} />
+                    </button>
+                  )}
                   <Workstation
                     mode={pack.inspectionMode}
                     components={pack.components}
@@ -451,6 +483,12 @@ export default function TicketView({
                     text: attempt.functionCorrect
                       ? "The key function ideas are present."
                       : ticket.functionRubric.guidance,
+                    missing: !attempt.functionCorrect
+                      ? missingIdeas(
+                          attempt.functionText,
+                          ticket.functionRubric,
+                        )
+                      : [],
                     example:
                       !attempt.functionCorrect && attempt.componentCorrect
                         ? ticket.functionRubric.example
@@ -514,8 +552,11 @@ export default function TicketView({
                 {attempt.resolved ? (
                   <>
                     <p className="resolution">{ticket.resolution}</p>
-                    <button className="button primary full" onClick={next}>
-                      Continue shift
+                    <button
+                      className="button primary full"
+                      onClick={onExplore ? back : next}
+                    >
+                      {onExplore ? "Back to pair tickets" : "Continue shift"}
                       <ArrowRight size={17} />
                     </button>
                   </>
@@ -551,38 +592,91 @@ export default function TicketView({
               <form onSubmit={send} className="diagnosis-form">
                 <fieldset>
                   <legend>
-                    1 <span>Component(s) involved</span>
+                    1{" "}
+                    <span>
+                      {pairGroups
+                        ? "Choose the two parts"
+                        : "Component(s) involved"}
+                    </span>
                   </legend>
-                  <p className="small muted">
-                    Select all components that your diagnosis needs.
-                  </p>
-                  <div className="component-choices">
-                    {pack.components.map((c) => (
-                      <label
-                        className={`component-choice ${p.draft.components.includes(c.id) ? "checked" : ""}`}
-                        key={c.id}
-                      >
-                        <input
-                          type="checkbox"
-                          checked={p.draft.components.includes(c.id)}
-                          onChange={(e) =>
-                            draft({
-                              components: e.target.checked
-                                ? [...p.draft.components, c.id]
-                                : p.draft.components.filter(
-                                    (id) => id !== c.id,
-                                  ),
-                            })
-                          }
-                        />
-                        <span>{c.shortName}</span>
-                      </label>
-                    ))}
-                  </div>
+                  {pairGroups ? (
+                    <div className="ticket-pair-selectors">
+                      {pairGroups.map(({ label, options }) => (
+                        <label className="field" key={label}>
+                          <span>{label}</span>
+                          <select
+                            required
+                            value={
+                              p.draft.components.find((id) =>
+                                options.some((option) => option.id === id),
+                              ) ?? ""
+                            }
+                            onChange={(event) => {
+                              const chosen = event.target.value;
+                              change((progress) => ({
+                                ...progress,
+                                draft: {
+                                  ...progress.draft,
+                                  components: [
+                                    ...progress.draft.components.filter(
+                                      (id) =>
+                                        !options.some(
+                                          (option) => option.id === id,
+                                        ),
+                                    ),
+                                    ...(chosen ? [chosen] : []),
+                                  ],
+                                },
+                              }));
+                            }}
+                          >
+                            <option value="">Choose a part</option>
+                            {options.map((option) => (
+                              <option key={option.id} value={option.id}>
+                                {option.shortName}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                      ))}
+                    </div>
+                  ) : (
+                    <>
+                      <p className="small muted">
+                        Select all components that your diagnosis needs.
+                      </p>
+                      <div className="component-choices">
+                        {pack.components.map((c) => (
+                          <label
+                            className={`component-choice ${p.draft.components.includes(c.id) ? "checked" : ""}`}
+                            key={c.id}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={p.draft.components.includes(c.id)}
+                              onChange={(e) =>
+                                draft({
+                                  components: e.target.checked
+                                    ? [...p.draft.components, c.id]
+                                    : p.draft.components.filter(
+                                        (id) => id !== c.id,
+                                      ),
+                                })
+                              }
+                            />
+                            <span>{c.shortName}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </>
+                  )}
                 </fieldset>
                 <label className="field">
                   <span>
-                    <b>2</b> What does this component do?
+                    <b>2</b>{" "}
+                    {pairGroups
+                      ? "What does each part do?"
+                      : "What does this component do?"}
                   </span>
                   <textarea
                     required
@@ -591,12 +685,26 @@ export default function TicketView({
                     rows={3}
                     value={p.draft.functionText}
                     onChange={(e) => draft({ functionText: e.target.value })}
-                    placeholder="Describe its main function in your own words…"
+                    placeholder={
+                      pairGroups
+                        ? "The peripheral… The internal component…"
+                        : "Describe its main function in your own words…"
+                    }
                   />
+                  {pairGroups && ticket.functionRubric.criteria && (
+                    <ul className="reasoning-criteria">
+                      {ticket.functionRubric.criteria.map((idea) => (
+                        <li key={idea}>{idea}</li>
+                      ))}
+                    </ul>
+                  )}
                 </label>
                 <label className="field">
                   <span>
-                    <b>3</b> Why is it relevant to this ticket?
+                    <b>3</b>{" "}
+                    {pairGroups
+                      ? "Why does this setup fit the request?"
+                      : "Why is it relevant to this ticket?"}
                   </span>
                   <textarea
                     required
@@ -650,7 +758,7 @@ export default function TicketView({
                 <button
                   className="button primary full"
                   type="submit"
-                  disabled={!p.draft.components.length}
+                  disabled={p.draft.components.length < (pairGroups ? 2 : 1)}
                 >
                   <Send size={16} />
                   Submit Diagnosis

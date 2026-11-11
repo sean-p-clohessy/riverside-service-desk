@@ -19,6 +19,7 @@ export interface Machine {
   gpu: string;
   psu: string;
   os: string;
+  connections?: string;
 }
 export interface ConceptRubric {
   groups: string[][];
@@ -56,8 +57,10 @@ export interface ScenarioPack {
   brief: string;
   tiers: { name: string; description: string }[];
   inspectionMode?: "workstation" | "catalog";
+  lab?: "peripherals";
   components: ComponentInfo[];
   tickets: Ticket[];
+  practiceIds?: string[];
 }
 export interface Diagnosis {
   components: ComponentId[];
@@ -103,6 +106,7 @@ export interface Profile {
   order: string[];
   settings: TeacherSettings;
   inspected: string[];
+  practice?: { passed: string[]; comparison: string };
   unlockedTickets: string[];
   statistics: { shifts: number; visits: number; submissions: number };
 }

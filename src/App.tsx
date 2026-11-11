@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import {
   Activity,
@@ -31,14 +31,20 @@ import {
   X,
   Zap,
 } from "lucide-react";
-import type { Profile } from "./types.ts";
-import { pack, teacherPin } from "./data/config.ts";
+import type { Profile, ScenarioPack } from "./types.ts";
+import {
+  activePackId,
+  coursePacks,
+  scenarioPacks,
+  teacherPin,
+} from "./data/config.ts";
 import {
   componentPerformance,
   createProfile,
   emptyProgress,
   resetProfile,
   shuffle,
+  startWeek,
   stats,
   syncProgress,
 } from "./lib/engine.ts";
@@ -48,12 +54,14 @@ import {
   exportProgress,
   parseImport,
   PROFILE_PREFIX,
-  readProfiles,
+  readCourseProfiles,
   saveProfile,
 } from "./lib/storage.ts";
 import Workstation, { ComponentIcon } from "./components/Workstation.tsx";
 import TicketView from "./components/TicketView.tsx";
 import Report from "./components/Report.tsx";
+import PeripheralLab, { DeskPreview } from "./components/PeripheralLab.tsx";
+import { labViews, landingView, parseRoute, routeHref } from "./lib/routes.ts";
 
 const navItems = [
   { id: "dashboard", name: "Dashboard", Icon: LayoutDashboard },
@@ -63,12 +71,24 @@ const navItems = [
   { id: "performance", name: "Performance", Icon: Activity },
   { id: "report", name: "Session Report", Icon: FileText },
 ];
-function currentView() {
-  const hash = window.location.hash.slice(1);
-  return navItems.some((n) => n.id === hash) ||
-    /^ticket\/[a-z0-9-]+$/i.test(hash)
-    ? hash
-    : "dashboard";
+function WeekNavigation({ selected }: { selected: ScenarioPack }) {
+  return (
+    <nav className="course-weeks" aria-label="Course weeks">
+      {coursePacks.map((week) => (
+        <a
+          key={week.id}
+          href={routeHref(week)}
+          aria-current={selected.id === week.id ? "page" : undefined}
+        >
+          <span className="week-tab-number">Week {week.week}</span>
+          <span className="week-tab-title">{week.title}</span>
+          {week.id !== activePackId && (
+            <span className="week-archive">Archive</span>
+          )}
+        </a>
+      ))}
+    </nav>
+  );
 }
 function sessionId() {
   try {
@@ -146,16 +166,30 @@ function Brand({ small = false }: { small?: boolean }) {
 }
 
 export default function App() {
-  const [initial] = useState(() => readProfiles(pack));
-  const [profiles, setProfiles] = useState<Profile[]>(initial.profiles);
-  const [profile, setProfile] = useState<Profile | null>(
-    () => initial.profiles.find((p) => p.id === sessionId()) ?? null,
+  const [route, setRoute] = useState(() => parseRoute(window.location.hash));
+  const pack = scenarioPacks[route.packId];
+  const view = route.view;
+  const isPeripherals = pack.lab === "peripherals";
+  const [initial] = useState(() => readCourseProfiles(coursePacks));
+  const [records, setRecords] = useState<Profile[]>(initial.profiles);
+  const recordsRef = useRef(records);
+  const [activeId, setActiveId] = useState(sessionId);
+  const currentRecord = records.find(
+    (record) => record.id === activeId && record.packId === pack.id,
   );
-  const profileRef = useRef(profile);
+  const identity = records.find((record) => record.id === activeId);
+  const profile = useMemo(
+    () => currentRecord ?? (identity ? startWeek(identity, pack) : null),
+    [currentRecord, identity, pack],
+  );
+  const profiles = [...new Set(records.map((record) => record.id))].map(
+    (id) =>
+      records.find((record) => record.id === id && record.packId === pack.id) ??
+      records.find((record) => record.id === id)!,
+  );
   const [warning, setWarning] = useState(initial.warning),
     [notice, setNotice] = useState("");
-  const [view, setView] = useState(currentView),
-    [menu, setMenu] = useState(false),
+  const [menu, setMenu] = useState(false),
     [name, setName] = useState(""),
     [nameError, setNameError] = useState("");
   const [manage, setManage] = useState(false),
@@ -178,7 +212,7 @@ export default function App() {
 
   useEffect(() => {
     const onHash = () => {
-      setView(currentView());
+      setRoute(parseRoute(window.location.hash));
       setMenu(false);
     };
     window.addEventListener("hashchange", onHash);
@@ -191,7 +225,17 @@ export default function App() {
     }
     mainRef.current?.focus();
     window.scrollTo({ top: 0 });
-  }, [view]);
+  }, [view, pack.id]);
+  useEffect(() => {
+    setSearch("");
+    setFilter("all");
+    setLibrarySearch("");
+    setTeacher(false);
+    setShowAnswers(false);
+    setTeacherModal(false);
+    setManage(false);
+    setConfirm(null);
+  }, [pack.id]);
   useEffect(() => {
     if (!notice) return;
     const timer = setTimeout(() => setNotice(""), 6500);
@@ -200,39 +244,37 @@ export default function App() {
   useEffect(() => {
     const storageChanged = (e: StorageEvent) => {
       if (e.key && !e.key.startsWith(PROFILE_PREFIX)) return;
-      const result = readProfiles(pack);
-      setProfiles(result.profiles);
-      const active = profileRef.current;
-      if (active) {
-        const fresh = result.profiles.find((p) => p.id === active.id) ?? null;
-        profileRef.current = fresh;
-        setProfile(fresh);
-      }
+      const result = readCourseProfiles(coursePacks);
+      recordsRef.current = result.profiles;
+      setRecords(result.profiles);
       if (result.warning) setWarning(result.warning);
     };
     window.addEventListener("storage", storageChanged);
     return () => window.removeEventListener("storage", storageChanged);
   }, []);
 
-  function navigate(to: string) {
-    if (window.location.hash === "#" + to) {
-      setView(to);
+  function navigate(to: string, target = pack) {
+    const href = routeHref(target, to);
+    if (window.location.hash === href) {
+      setRoute({ packId: target.id, view: to });
       setMenu(false);
-    } else window.location.hash = to;
+    } else window.location.hash = href;
   }
   function store(value: Profile) {
-    const next = syncProgress(value, pack);
+    const next = syncProgress(value, scenarioPacks[value.packId]);
     const saved = saveProfile(next);
     if (!saved)
       setWarning(
         "Your latest changes could not be saved in browser storage. Keep this page open and export progress now to preserve your work.",
       );
-    profileRef.current = next;
-    setProfile(next);
-    setProfiles((current) => [
+    recordsRef.current = [
       next,
-      ...current.filter((p) => p.id !== next.id),
-    ]);
+      ...recordsRef.current.filter(
+        (p) => p.id !== next.id || p.packId !== next.packId,
+      ),
+    ];
+    setRecords(recordsRef.current);
+    setActiveId(next.id);
     try {
       sessionStorage.setItem(ACTIVE_KEY, next.id);
     } catch {
@@ -240,17 +282,31 @@ export default function App() {
     }
   }
   function update(fn: (current: Profile) => Profile) {
-    if (profileRef.current) store(fn(profileRef.current));
+    if (!profile) return;
+    const current =
+      recordsRef.current.find(
+        (p) => p.id === profile.id && p.packId === pack.id,
+      ) ?? profile;
+    const next = fn(current);
+    if (next !== current) store(next);
   }
-  function begin(p: Profile) {
+  function begin(
+    p: Profile,
+    target = pack,
+    to = target.id === pack.id ? view : landingView(target),
+  ) {
+    const current = p.packId === target.id ? p : startWeek(p, target);
     store({
-      ...p,
-      statistics: { ...p.statistics, visits: p.statistics.visits + 1 },
+      ...current,
+      statistics: {
+        ...current.statistics,
+        visits: current.statistics.visits + 1,
+      },
     });
     setTeacher(false);
     setShowAnswers(false);
     setManage(false);
-    navigate("dashboard");
+    navigate(to, target);
   }
   function start(e: React.FormEvent) {
     e.preventDefault();
@@ -274,8 +330,7 @@ export default function App() {
     setNameError("");
   }
   function signOut() {
-    profileRef.current = null;
-    setProfile(null);
+    setActiveId(null);
     setTeacher(false);
     setShowAnswers(false);
     setManage(false);
@@ -284,10 +339,10 @@ export default function App() {
     } catch {
       /* optional */
     }
-    navigate("dashboard");
+    navigate(landingView(pack));
   }
   function openTicket(id: string) {
-    const active = profileRef.current;
+    const active = profile;
     if (!active?.unlockedTickets.includes(id)) return;
     if (!active.tickets[id])
       update((p) => ({
@@ -302,12 +357,15 @@ export default function App() {
       store(resetProfile(profile, pack));
       setTeacher(false);
       setShowAnswers(false);
-      navigate("dashboard");
-      setNotice("Current shift reset. Other local profiles were kept.");
+      navigate(landingView(pack));
+      setNotice(`${pack.subtitle} progress reset.`);
     } else {
       try {
-        deleteProfile(profile.id);
-        setProfiles((p) => p.filter((x) => x.id !== profile.id));
+        for (const week of coursePacks) deleteProfile(profile.id, week.id);
+        recordsRef.current = recordsRef.current.filter(
+          (record) => record.id !== profile.id,
+        );
+        setRecords(recordsRef.current);
         signOut();
         setNotice("Local profile deleted from this browser.");
       } catch {
@@ -324,16 +382,23 @@ export default function App() {
     try {
       if (file.size > 2_000_000)
         throw new Error("Progress files must be smaller than 2 MB.");
-      const incoming = parseImport(await file.text(), pack);
-      const existing = profiles.find(
-        (p) =>
-          p.id === incoming.id ||
-          p.name.toLowerCase() === incoming.name.toLowerCase(),
+      const incoming = parseImport(await file.text(), coursePacks);
+      const target = scenarioPacks[incoming.packId];
+      const sameLearner = (p: Profile) =>
+        p.id === incoming.id ||
+        p.name.toLowerCase() === incoming.name.toLowerCase();
+      const existing = recordsRef.current.find(
+        (p) => p.packId === incoming.packId && sameLearner(p),
       );
       if (existing) setPendingImport({ incoming, existing });
       else {
-        begin(incoming);
-        setNotice("Progress imported into this browser.");
+        const known = recordsRef.current.find(sameLearner);
+        begin(
+          known ? { ...incoming, id: known.id, name: known.name } : incoming,
+          target,
+          landingView(target),
+        );
+        setNotice(`${target.subtitle} progress imported into this browser.`);
       }
     } catch (error) {
       setNotice(
@@ -347,7 +412,13 @@ export default function App() {
   function finishImport(replace: boolean) {
     if (!pendingImport) return;
     const { incoming, existing } = pendingImport;
-    if (replace) begin({ ...incoming, id: existing.id, name: existing.name });
+    const target = scenarioPacks[incoming.packId];
+    if (replace)
+      begin(
+        { ...incoming, id: existing.id, name: existing.name },
+        target,
+        landingView(target),
+      );
     else {
       let suffix = 1,
         importedName = incoming.name.slice(0, 45) + " (import)";
@@ -357,7 +428,11 @@ export default function App() {
         )
       )
         importedName = incoming.name.slice(0, 43) + ` (import ${++suffix})`;
-      begin({ ...incoming, id: crypto.randomUUID(), name: importedName });
+      begin(
+        { ...incoming, id: crypto.randomUUID(), name: importedName },
+        target,
+        landingView(target),
+      );
     }
     setPendingImport(null);
     setNotice("Progress imported. Keep the original JSON file as a backup.");
@@ -508,12 +583,19 @@ export default function App() {
           <p>
             The file belongs to <strong>{pendingImport.incoming.name}</strong>.
             This browser already has{" "}
+            {scenarioPacks[pendingImport.incoming.packId].subtitle} work for{" "}
             <strong>{pendingImport.existing.name}</strong> with{" "}
-            {stats(pendingImport.existing, pack).resolved} resolved tickets.
+            {
+              stats(
+                pendingImport.existing,
+                scenarioPacks[pendingImport.existing.packId],
+              ).resolved
+            }{" "}
+            resolved tickets.
           </p>
           <p>
             Keep both to create a separate imported profile. Replacing uses the
-            file’s progress and overwrites only this existing local profile.
+            file’s progress for this week.
           </p>
           <div className="modal-actions">
             <button
@@ -551,6 +633,7 @@ export default function App() {
             LOCAL PROGRESS · NO ACCOUNT NEEDED
           </span>
         </div>
+        <WeekNavigation selected={pack} />
         <main className="start-layout">
           <div className="start-story">
             <div className="eyebrow">
@@ -575,16 +658,21 @@ export default function App() {
                 <span className="eyebrow">THIS WEEK’S ASSIGNMENT</span>
                 <h2>{pack.title}</h2>
                 <p>
-                  {pack.tickets.length} tickets · {pack.tiers.length} skill
-                  tiers · your own pace
+                  {isPeripherals
+                    ? "12 devices to explore · 90-minute lesson"
+                    : `${pack.tickets.length} tickets · ${pack.tiers.length} skill tiers`}
                 </p>
               </div>
             </div>
-            <Workstation
-              mode={pack.inspectionMode}
-              components={pack.components}
-              compact
-            />
+            {isPeripherals ? (
+              <DeskPreview />
+            ) : (
+              <Workstation
+                mode={pack.inspectionMode}
+                components={pack.components}
+                compact
+              />
+            )}
             <p className="small muted fictional">
               A fictional service desk for learning. No real systems are
               changed.
@@ -621,8 +709,9 @@ export default function App() {
                         <span>
                           <strong>{p.name}</strong>
                           <small>
-                            {stats(p, pack).resolved} tickets completed ·{" "}
-                            {stats(p, pack).score} points
+                            {scenarioPacks[p.packId].subtitle} ·{" "}
+                            {stats(p, scenarioPacks[p.packId]).resolved} tickets
+                            completed
                           </small>
                         </span>
                         <ChevronRight size={18} />
@@ -723,26 +812,37 @@ export default function App() {
           </button>
         </div>
         <nav aria-label="Main navigation">
-          {navItems.map(({ id, name: label, Icon }) => (
-            <a
-              key={id}
-              href={"#" + id}
-              onClick={() => setMenu(false)}
-              className={
-                view === id || (id === "queue" && ticket) ? "active" : ""
-              }
-              aria-current={
-                view === id || (id === "queue" && ticket) ? "page" : undefined
-              }
-            >
-              <Icon size={18} />
-              <span>{label}</span>
-              {id === "queue" && <span className="nav-count">{s.open}</span>}
-            </a>
-          ))}
+          {navItems.map(({ id, name: label, Icon }) => {
+            const destination = id === "dashboard" ? landingView(pack) : id;
+            const selected =
+              view === destination ||
+              (id === "queue" && ticket) ||
+              (id === "dashboard" &&
+                isPeripherals &&
+                (labViews.includes(view) || view === "dashboard"));
+            return (
+              <a
+                key={id}
+                href={routeHref(pack, destination)}
+                onClick={() => setMenu(false)}
+                className={selected ? "active" : ""}
+                aria-current={selected ? "page" : undefined}
+              >
+                <Icon size={18} />
+                <span>
+                  {isPeripherals && id === "dashboard"
+                    ? "Peripherals Lab"
+                    : label}
+                </span>
+                {id === "queue" && <span className="nav-count">{s.open}</span>}
+              </a>
+            );
+          })}
         </nav>
         <div className="sidebar-pack">
-          <div className="eyebrow">ACTIVE SCENARIO</div>
+          <div className="eyebrow">
+            {pack.id === activePackId ? "CURRENT WEEK" : "WEEK ARCHIVE"}
+          </div>
           <div className="sidebar-pack-number">
             WEEK <strong>{String(pack.week).padStart(2, "0")}</strong>
           </div>
@@ -823,6 +923,7 @@ export default function App() {
             </button>
           </div>
         </header>
+        <WeekNavigation selected={pack} />
         {warning && (
           <div className="warning storage-warning" role="alert">
             {warning}
@@ -851,7 +952,17 @@ export default function App() {
           className="main-content"
           tabIndex={-1}
         >
-          {view === "dashboard" && (
+          {isPeripherals &&
+            (labViews.includes(view) || view === "dashboard") && (
+              <PeripheralLab
+                pack={pack}
+                profile={profile}
+                view={view}
+                update={update}
+                navigate={navigate}
+              />
+            )}
+          {!isPeripherals && view === "dashboard" && (
             <>
               <div className="page-heading">
                 <div>
@@ -1115,7 +1226,9 @@ export default function App() {
                   <h1>{view === "queue" ? "Ticket Queue" : "My Tickets"}</h1>
                   <p>
                     {view === "queue"
-                      ? "Investigate the request. Gather evidence. Make a supported decision."
+                      ? isPeripherals
+                        ? "Choose two requests with a partner. Take turns as technician and verifier."
+                        : "Investigate the request. Gather evidence. Make a supported decision."
                       : "Your assigned and resolved requests, all in one place."}
                   </p>
                 </div>
@@ -1168,9 +1281,9 @@ export default function App() {
               </div>
               <p className="small muted unlock-explanation">
                 <LockKeyhole size={14} />
-                Resolve all tickets in a tier to unlock the next. Open a ticket
-                to assign it to yourself. First-attempt accuracy checks all four
-                parts of your diagnosis.
+                {isPeripherals
+                  ? "All requests are open. Identify an external peripheral and an internal component in every ticket."
+                  : "Resolve all tickets in a tier to unlock the next. Open a ticket to assign it to yourself. First-attempt accuracy checks all four parts of your diagnosis."}
               </p>
             </>
           )}
@@ -1180,7 +1293,11 @@ export default function App() {
                 <div>
                   <div className="eyebrow">TECHNICIAN REFERENCE</div>
                   <h1>Component Library</h1>
-                  <p>Know what’s inside. Understand what it does.</p>
+                  <p>
+                    {isPeripherals
+                      ? "Look up what each device or internal component does."
+                      : "Know what’s inside. Understand what it does."}
+                  </p>
                 </div>
                 <label className="search-box">
                   <Search size={17} />
@@ -1326,9 +1443,7 @@ export default function App() {
                 </div>
               </section>
               <p className="small muted">
-                A review flag remembers revisions and helps plan practice. It
-                does not remove a resolved ticket. The network card is reference
-                content in this pack and has no assessed ticket.
+                A review flag shows where an earlier answer needed revision.
               </p>
             </>
           )}
@@ -1342,6 +1457,9 @@ export default function App() {
                 ticket={ticket}
                 profile={profile}
                 pack={pack}
+                onExplore={
+                  isPeripherals ? () => navigate("explore") : undefined
+                }
                 update={update}
                 teacher={teacher}
                 showAnswers={showAnswers}
@@ -1390,13 +1508,14 @@ export default function App() {
             <div>
               <h3>{profile.name}</h3>
               <p>
-                {s.resolved} tickets resolved · {s.score} points
+                {pack.subtitle} · {s.resolved} tickets resolved · {s.score}{" "}
+                points
               </p>
             </div>
           </div>
           <p className="small muted">
-            Saved only in this browser. These profiles are not secure accounts.
-            Shared or managed computers may clear browser data.
+            Progress is saved in this browser. Reset and export apply to{" "}
+            {pack.subtitle}.
           </p>
           <div className="management-actions">
             <button
@@ -1454,9 +1573,8 @@ export default function App() {
         >
           <p>
             {confirm === "reset"
-              ? `This clears ${profile.name}’s ticket progress, notes, attempts, score and teacher settings for the current shift. The profile remains.`
-              : `This removes ${profile.name} and their saved shift from this browser.`}{" "}
-            Other technician profiles will be kept.
+              ? `This clears ${profile.name}’s ${pack.subtitle} tickets, notes, score and practice results.`
+              : `This removes ${profile.name} and their saved progress for both weeks from this browser.`}
           </p>
           <p>Export a copy first if you want to keep this work.</p>
           <div className="modal-actions">

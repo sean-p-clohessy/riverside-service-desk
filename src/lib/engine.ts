@@ -41,10 +41,18 @@ export function createProfile(name: string, pack: ScenarioPack): Profile {
       order: "sequential",
     },
     inspected: [],
+    ...(pack.practiceIds ? { practice: { passed: [], comparison: "" } } : {}),
     unlockedTickets: [],
     statistics: { shifts: 1, visits: 1, submissions: 0 },
   };
   return syncProgress(profile, pack);
+}
+export function startWeek(learner: Profile, pack: ScenarioPack): Profile {
+  return {
+    ...createProfile(learner.name, pack),
+    id: learner.id,
+    createdAt: learner.createdAt,
+  };
 }
 export function resetProfile(profile: Profile, pack: ScenarioPack): Profile {
   const fresh = createProfile(profile.name, pack);
@@ -250,6 +258,12 @@ export function evidenceSummary(profile: Profile, pack: ScenarioPack): string {
     `Tickets attempted: ${s.attempted}/${pack.tickets.length} | Resolved: ${s.resolved} | First-attempt accuracy: ${s.accuracy}% | Score: ${s.score}`,
     "First-attempt accuracy means all four rubric checks passed on the first submission. Scores use the best attempt per ticket.",
     `Components encountered: ${names([...new Set([...profile.inspected, ...pack.tickets.filter((t) => profile.tickets[t.id]?.attempts.length).flatMap((t) => t.expected)])]) || "None yet"}`,
+    ...(pack.practiceIds
+      ? [
+          `Connection checks: ${profile.practice?.passed.length ?? 0}/${pack.practiceIds.length}`,
+          `Individual comparison: ${profile.practice?.comparison.trim() || "None yet"}`,
+        ]
+      : []),
     `Strengths: ${
       performance
         .filter((p) => p.strong)
