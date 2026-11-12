@@ -717,10 +717,12 @@ dialog > p strong {
   .sidebar {
     transform: translateX(-100%);
     width: 238px;
-    box-shadow: 15px 0 60px #0009;
+    visibility: hidden;
   }
   .sidebar.mobile-open {
     transform: translateX(0);
+    visibility: visible;
+    box-shadow: 15px 0 60px #0009;
   }
   .app-body {
     margin-left: 0;

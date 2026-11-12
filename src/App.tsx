@@ -156,6 +156,17 @@ export default function App() {
   const fileRef = useRef<HTMLInputElement>(null),
     mainRef = useRef<HTMLElement>(null);
   const firstNavigation = useRef(true);
+  const menuButton = useRef<HTMLButtonElement>(null);
+  const menuCloseButton = useRef<HTMLButtonElement>(null);
+
+  function closeNavigation() {
+    setMenu(false);
+    menuButton.current?.focus({ preventScroll: true });
+  }
+
+  useEffect(() => {
+    if (menu) menuCloseButton.current?.focus();
+  }, [menu]);
 
   useEffect(() => {
     const onHash = () => {
@@ -749,13 +760,20 @@ export default function App() {
       >
         Skip to main content
       </a>
-      <aside className={`sidebar ${menu ? "mobile-open" : ""}`}>
+      <aside
+        id="service-desk-navigation"
+        className={`sidebar ${menu ? "mobile-open" : ""}`}
+        onKeyDown={(event) => {
+          if (menu && event.key === "Escape") closeNavigation();
+        }}
+      >
         <Brand />
         <div className="workspace-label">
           TECHNICIAN WORKSPACE
           <button
             className="icon-button mobile-close"
-            onClick={() => setMenu(false)}
+            ref={menuCloseButton}
+            onClick={closeNavigation}
             aria-label="Close navigation"
           >
             <X size={18} />
@@ -774,7 +792,12 @@ export default function App() {
               <a
                 key={id}
                 href={routeHref(pack, destination)}
-                onClick={() => setMenu(false)}
+                onClick={() => {
+                  if (menu) {
+                    setMenu(false);
+                    mainRef.current?.focus({ preventScroll: true });
+                  }
+                }}
                 className={selected ? "active" : ""}
                 aria-current={selected ? "page" : undefined}
               >
@@ -837,8 +860,11 @@ export default function App() {
           <div>
             <button
               className="icon-button mobile-menu"
+              ref={menuButton}
               onClick={() => setMenu(true)}
               aria-label="Open navigation"
+              aria-controls="service-desk-navigation"
+              aria-expanded={menu}
             >
               <Menu size={21} />
             </button>
