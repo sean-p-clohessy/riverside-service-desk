@@ -1,10 +1,10 @@
 .feedback-coaching {
-  font-size: 12px;
-  color: #e0d5ed;
+  font-size: 0.75rem;
+  color: var(--text);
   margin-top: 12px;
   padding: 12px;
-  background: #252a3c;
-  border-left: 2px solid #b89afa;
+  background: var(--purple-tint);
+  border-left: 2px solid var(--purple);
 }
 .feedback-coaching ul,
 .reasoning-criteria {
@@ -17,26 +17,26 @@
 }
 .feedback-example {
   margin-top: 13px;
-  font-size: 12px;
+  font-size: 0.75rem;
   padding: 10px 12px;
-  border: 1px solid #496176;
+  border: 1px solid var(--control-line);
   border-radius: 4px;
-  background: #192d3b;
+  background: var(--cyan-tint);
 }
 .feedback-example summary {
-  color: #9ee9f3;
+  color: var(--cyan);
 }
 .feedback-example p {
   margin-top: 10px;
 }
 .field > .reasoning-prompt {
-  font-size: 11px;
-  color: #bacadd;
+  font-size: 0.6875rem;
+  color: var(--muted);
   font-weight: 500;
 }
 .reasoning-criteria {
-  font-size: 12px;
+  font-size: 0.75rem;
   line-height: 1.6;
-  color: #b9cce0;
+  color: var(--muted);
   margin-top: 0;
 }

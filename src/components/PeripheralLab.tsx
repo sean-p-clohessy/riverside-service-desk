@@ -26,6 +26,7 @@ import {
 import type { Peripheral, PortId } from "../data/week8Lab.ts";
 import { routeHref } from "../lib/routes.ts";
 import Workstation, { ComponentIcon } from "./Workstation.tsx";
+import DiagramMagnifier from "./DiagramMagnifier.tsx";
 
 const media = `${import.meta.env.BASE_URL}media/week8/`;
 const price = new Intl.NumberFormat("en-GB", {
@@ -59,6 +60,40 @@ export function DeskPreview() {
       height={1024}
       alt="Monitor, webcam, keyboard, mouse, speaker, printer, headset, microphone and portable drive on an IT workbench"
     />
+  );
+}
+
+function DeskDiagram({
+  selected,
+  onSelect,
+}: {
+  selected: string;
+  onSelect: (item: Peripheral) => void;
+}) {
+  return (
+    <div className="desk-interactive" aria-label="Interactive desk illustration">
+      <DeskPreview />
+      {peripherals
+        .filter((item) => item.id in deskPositions)
+        .map((item) => {
+          const [left, top] = deskPositions[item.id];
+          return (
+            <button
+              type="button"
+              className="desk-hotspot"
+              key={item.id}
+              data-diagram-part={item.id}
+              style={{ left: `${left}%`, top: `${top}%` }}
+              aria-label={`Inspect ${item.shortName} on the desk`}
+              aria-pressed={selected === item.id}
+              onClick={() => onSelect(item)}
+            >
+              <span className="hotspot-dot" aria-hidden="true" />
+              <span className="hotspot-name">{item.shortName}</span>
+            </button>
+          );
+        })}
+    </div>
   );
 }
 
@@ -173,10 +208,10 @@ export default function PeripheralLab({
       panel.focus({ preventScroll: true });
     });
   }
-  function inspect(item: Peripheral) {
+  function inspect(item: Peripheral, moveFocus = true) {
     setDeviceId(item.id);
     record(item.id);
-    focusPanel(detail);
+    if (moveFocus) focusPanel(detail);
   }
   function trace(item: Peripheral) {
     setDeviceId(item.id);
@@ -265,30 +300,35 @@ export default function PeripheralLab({
 
       {page === "explore" && (
         <div className="lab-explore-grid">
-          <div
-            className="desk-interactive"
-            aria-label="Interactive desk illustration"
-          >
-            <DeskPreview />
-            {peripherals
-              .filter((item) => item.id in deskPositions)
-              .map((item) => {
-                const [left, top] = deskPositions[item.id];
-                return (
-                  <button
-                    type="button"
-                    className="desk-hotspot"
-                    key={item.id}
-                    style={{ left: `${left}%`, top: `${top}%` }}
-                    aria-label={`Inspect ${item.shortName} on the desk`}
-                    aria-pressed={deviceId === item.id}
-                    onClick={() => inspect(item)}
-                  >
-                    <span className="hotspot-dot" aria-hidden="true" />
-                    <span className="hotspot-name">{item.shortName}</span>
-                  </button>
-                );
-              })}
+          <div className="lab-desk">
+            <div className="workstation-tools">
+              <DiagramMagnifier
+                title="Peripheral desk"
+                diagram={
+                  <DeskDiagram
+                    selected={deviceId}
+                    onSelect={(item) => inspect(item, false)}
+                  />
+                }
+                selectionLabel="Peripheral"
+                items={peripherals.map(({ id, shortName }) => ({
+                  id,
+                  label: shortName,
+                }))}
+                selected={deviceId}
+                onSelect={(id) =>
+                  inspect(peripherals.find((item) => item.id === id)!, false)
+                }
+                details={
+                  <>
+                    <h3>{device.shortName}</h3>
+                    <p>{device.look}</p>
+                    <p>{device.function}</p>
+                  </>
+                }
+              />
+            </div>
+            <DeskDiagram selected={deviceId} onSelect={inspect} />
           </div>
           <section
             ref={detail}
@@ -433,7 +473,28 @@ export default function PeripheralLab({
         <>
           <div className="lab-ports-layout">
             <section aria-labelledby="socket-library">
-              <h2 id="socket-library">Connection library</h2>
+              <div className="lab-catalog-heading">
+                <h2 id="socket-library">Connection library</h2>
+                <DiagramMagnifier
+                  title="Port diagram"
+                  diagram={
+                    <div className="socket-enlarged">
+                      <SocketShape id={port.id} />
+                    </div>
+                  }
+                  selectionLabel="Port or connector"
+                  items={ports.map(({ id, name }) => ({ id, label: name }))}
+                  selected={portId}
+                  onSelect={setPortId}
+                  details={
+                    <>
+                      <h3>{port.name}</h3>
+                      <p>{port.shape}</p>
+                      <p>{port.use}</p>
+                    </>
+                  }
+                />
+              </div>
               <p className="lab-vocabulary">
                 A port is a socket on the equipment. A cable’s connector is the
                 plug that fits it.

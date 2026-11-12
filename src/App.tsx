@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import type { ReactNode } from "react";
 import {
   Activity,
   ArrowRight,
@@ -61,6 +60,8 @@ import Workstation, { ComponentIcon } from "./components/Workstation.tsx";
 import TicketView from "./components/TicketView.tsx";
 import Report from "./components/Report.tsx";
 import PeripheralLab, { DeskPreview } from "./components/PeripheralLab.tsx";
+import AccessibilitySettings from "./components/AccessibilitySettings.tsx";
+import Modal from "./components/Modal.tsx";
 import { labViews, landingView, parseRoute, routeHref } from "./lib/routes.ts";
 
 const navItems = [
@@ -96,60 +97,6 @@ function sessionId() {
   } catch {
     return null;
   }
-}
-function Modal({
-  title,
-  children,
-  close,
-}: {
-  title: string;
-  children: ReactNode;
-  close: () => void;
-}) {
-  const ref = useRef<HTMLDialogElement>(null);
-  useEffect(() => {
-    const element = ref.current;
-    const previous = document.activeElement as HTMLElement | null;
-    element?.showModal();
-    return () => {
-      element?.close();
-      previous?.focus();
-    };
-  }, []);
-  return (
-    <dialog
-      ref={ref}
-      onCancel={(e) => {
-        e.preventDefault();
-        close();
-      }}
-      aria-labelledby="modal-title"
-      onClick={(e) => {
-        if (e.target === ref.current) {
-          const rect = ref.current.getBoundingClientRect();
-          if (
-            e.clientX < rect.left ||
-            e.clientX > rect.right ||
-            e.clientY < rect.top ||
-            e.clientY > rect.bottom
-          )
-            close();
-        }
-      }}
-    >
-      <div className="modal-heading">
-        <h2 id="modal-title">{title}</h2>
-        <button
-          className="icon-button"
-          onClick={close}
-          aria-label="Close dialog"
-        >
-          <X size={20} />
-        </button>
-      </div>
-      {children}
-    </dialog>
-  );
 }
 function Brand({ small = false }: { small?: boolean }) {
   return (
@@ -628,10 +575,13 @@ export default function App() {
         {shared}
         <div className="start-top">
           <Brand />
-          <span className="local-label">
-            <ShieldCheck size={15} />
-            LOCAL PROGRESS · NO ACCOUNT NEEDED
-          </span>
+          <div className="start-top-actions">
+            <span className="local-label">
+              <ShieldCheck size={15} />
+              LOCAL PROGRESS · NO ACCOUNT NEEDED
+            </span>
+            <AccessibilitySettings />
+          </div>
         </div>
         <WeekNavigation selected={pack} />
         <main className="start-layout">
@@ -921,6 +871,7 @@ export default function App() {
               </span>
               <span>{profile.name}</span>
             </button>
+            <AccessibilitySettings />
           </div>
         </header>
         <WeekNavigation selected={pack} />

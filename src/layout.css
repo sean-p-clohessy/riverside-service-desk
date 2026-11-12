@@ -1,7 +1,7 @@
 /* Check-in, reports and local controls */
 .start-page {
   min-height: 100vh;
-  background: #0c101b;
+  background: var(--bg);
 }
 .start-top {
   max-width: 1280px;
@@ -10,7 +10,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 2px 30px;
-  border-bottom: 1px solid #2a3346;
+  border-bottom: 1px solid var(--line);
 }
 .start-top .brand {
   padding: 25px 0;
@@ -19,8 +19,8 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 9px;
-  color: #a9b9cc;
+  font-size: 0.5625rem;
+  color: var(--muted);
   letter-spacing: 1.3px;
 }
 .local-label svg {
@@ -37,17 +37,17 @@
 }
 .start-story > .eyebrow {
   color: var(--cyan);
-  font-size: 10px;
+  font-size: 0.625rem;
 }
 .start-story h1 {
-  font-size: 40px;
+  font-size: 2.5rem;
   line-height: 1.2;
   margin-top: 21px;
   letter-spacing: -1.3px;
 }
 .start-intro {
-  font-size: 17px;
-  color: #aab8ce;
+  font-size: 1.0625rem;
+  color: var(--muted);
   line-height: 1.7;
   margin-top: 18px;
 }
@@ -61,21 +61,21 @@
   border-bottom: 1px solid var(--line);
 }
 .pack-number {
-  font-size: 39px;
+  font-size: 2.4375rem;
   font-weight: 600;
   color: var(--pink);
   letter-spacing: -2px;
   line-height: 1;
 }
 .start-pack .eyebrow {
-  font-size: 8px;
+  font-size: 0.5rem;
 }
 .start-pack h2 {
-  font-size: 18px;
+  font-size: 1.125rem;
   margin-top: 5px;
 }
 .start-pack p {
-  font-size: 10px;
+  font-size: 0.625rem;
   color: var(--muted);
   margin-top: 4px;
 }
@@ -86,21 +86,21 @@
   transform: rotate(-4deg);
 }
 .start-story .compact .pc-part {
-  font-size: 6px;
+  font-size: 0.375rem;
 }
 .start-story .compact svg {
   width: 17px;
   height: 17px;
 }
 .start-story .compact .part-motherboard {
-  font-size: 5px;
+  font-size: 0.3125rem;
 }
 .start-story .compact .part-case-cooling {
-  font-size: 5px;
+  font-size: 0.3125rem;
 }
 .fictional {
   text-align: center;
-  font-size: 10px;
+  font-size: 0.625rem;
 }
 .start-form-column {
   padding-top: 8px;
@@ -109,16 +109,16 @@
   padding: 32px;
 }
 .start-panel > h2 {
-  font-size: 25px;
+  font-size: 1.5625rem;
   margin-top: 12px;
 }
 .start-panel > .muted {
-  font-size: 12px;
+  font-size: 0.75rem;
   margin: 13px 0 24px;
   line-height: 1.8;
 }
 .start-panel h3 {
-  font-size: 12px;
+  font-size: 0.75rem;
   display: flex;
   gap: 7px;
   align-items: center;
@@ -141,8 +141,8 @@
 }
 .profile-list .profile-select {
   padding: 13px;
-  background: #1d2639;
-  border: 1px solid #3c4761;
+  background: var(--panel-raised);
+  border: 1px solid var(--control-line);
   border-radius: 5px;
   display: flex;
   align-items: center;
@@ -150,8 +150,8 @@
   text-align: left;
 }
 .profile-list .profile-select:hover {
-  border-color: #ab6489;
-  background: #302338;
+  border-color: var(--pink-line);
+  background: var(--pink-tint);
 }
 .profile-list .profile-select > span:nth-child(2) {
   display: flex;
@@ -160,11 +160,11 @@
   min-width: 0;
 }
 .profile-list strong {
-  font-size: 13px;
+  font-size: 0.8125rem;
   overflow-wrap: anywhere;
 }
 .profile-list small {
-  font-size: 10px;
+  font-size: 0.625rem;
   color: var(--muted);
   margin-top: 4px;
 }
@@ -177,8 +177,8 @@
   border-top: 1px solid var(--line);
   margin-top: 22px;
   padding-top: 19px;
-  font-size: 10px;
-  color: #a6b4c9;
+  font-size: 0.625rem;
+  color: var(--muted);
   line-height: 1.7;
 }
 .privacy-note svg {
@@ -188,8 +188,8 @@
 .start-footer {
   display: flex;
   justify-content: space-between;
-  font-size: 8px;
-  color: #8e9cb2;
+  font-size: 0.5rem;
+  color: var(--muted);
   letter-spacing: 1.4px;
   padding: 20px 0;
 }
@@ -198,10 +198,10 @@ dialog {
   max-width: calc(100vw - 28px);
   max-height: calc(100vh - 36px);
   padding: 26px;
-  border: 1px solid #54617b;
+  border: 1px solid var(--control-line);
   border-radius: 8px;
-  color: #e8edf6;
-  background: #171e2d;
+  color: var(--text);
+  background: var(--panel-raised);
   box-shadow: 0 20px 100px #0009;
   overflow: auto;
 }
@@ -218,16 +218,16 @@ dialog::backdrop {
   margin-bottom: 20px;
 }
 .modal-heading h2 {
-  font-size: 20px;
+  font-size: 1.25rem;
 }
 dialog > p,
 dialog > form > p {
-  font-size: 13px;
-  color: #c1cde0;
+  font-size: 0.8125rem;
+  color: var(--muted);
   margin: 14px 0;
 }
 dialog > p strong {
-  color: #f6e6f1;
+  color: var(--text);
 }
 .modal-actions {
   display: flex;
@@ -243,13 +243,13 @@ dialog > p strong {
 .profile-summary .avatar {
   width: 43px;
   height: 43px;
-  font-size: 13px;
+  font-size: 0.8125rem;
 }
 .profile-summary h3 {
   overflow-wrap: anywhere;
 }
 .profile-summary p {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: var(--muted);
   margin-top: 4px;
 }
@@ -275,10 +275,10 @@ dialog > p strong {
   flex-direction: column;
 }
 .switch-row strong {
-  font-size: 13px;
+  font-size: 0.8125rem;
 }
 .switch-row small {
-  font-size: 10px;
+  font-size: 0.625rem;
   color: var(--muted);
   margin-top: 5px;
 }
@@ -287,8 +287,8 @@ dialog > p strong {
   width: 36px;
   height: 20px;
   border-radius: 12px;
-  border: 1px solid #70809c;
-  background: #29334a;
+  border: 1px solid var(--control-line);
+  background: var(--panel-raised);
   position: relative;
 }
 .switch-row input:before {
@@ -299,10 +299,10 @@ dialog > p strong {
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: #b8c5d9;
+  background: var(--muted);
 }
 .switch-row input:checked {
-  background: #62304c;
+  background: var(--pink-tint);
   border-color: var(--pink);
 }
 .switch-row input:checked:before {
@@ -331,16 +331,16 @@ dialog > p strong {
   border-top: 2px solid var(--pink);
 }
 .report-cover h2 {
-  font-size: 27px;
+  font-size: 1.6875rem;
   margin: 10px 0 6px;
   overflow-wrap: anywhere;
 }
 .report-cover p {
-  font-size: 13px;
-  color: #c4d0e3;
+  font-size: 0.8125rem;
+  color: var(--text);
 }
 .report-cover p.small {
-  font-size: 10px;
+  font-size: 0.625rem;
   color: var(--muted);
   margin-top: 7px;
 }
@@ -349,12 +349,12 @@ dialog > p strong {
   flex-direction: column;
   justify-content: center;
   gap: 5px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   flex-shrink: 0;
 }
 .report-dates span {
   color: var(--muted);
-  font-size: 9px;
+  font-size: 0.5625rem;
   text-transform: uppercase;
   letter-spacing: 0.8px;
 }
@@ -367,7 +367,7 @@ dialog > p strong {
   margin-bottom: 13px;
 }
 .report-stats .stat > strong {
-  font-size: 27px;
+  font-size: 1.6875rem;
 }
 .report-columns {
   display: grid;
@@ -376,7 +376,7 @@ dialog > p strong {
   margin: 25px 0;
 }
 .report-columns h3 {
-  font-size: 14px;
+  font-size: 0.875rem;
   margin-bottom: 14px;
 }
 .report-columns section:first-child h3 svg {
@@ -386,16 +386,16 @@ dialog > p strong {
   color: var(--gold);
 }
 .report-columns p {
-  font-size: 12px;
-  color: #c0cce0;
+  font-size: 0.75rem;
+  color: var(--text);
   white-space: pre-wrap;
 }
 .report-columns h4 {
-  font-size: 11px;
+  font-size: 0.6875rem;
   margin: 19px 0 9px;
 }
 .report-columns p.small {
-  font-size: 10px;
+  font-size: 0.625rem;
   color: var(--muted);
   margin-top: 13px;
 }
@@ -412,12 +412,12 @@ dialog > p strong {
   align-items: flex-start;
 }
 .evidence-record h3 {
-  font-size: 14px;
+  font-size: 0.875rem;
   display: block;
 }
 .evidence-record h3 .mono {
   display: block;
-  font-size: 10px;
+  font-size: 0.625rem;
   color: var(--cyan);
   margin-bottom: 6px;
 }
@@ -426,31 +426,31 @@ dialog > p strong {
   border-bottom: 1px solid var(--line);
 }
 .attempt-record h4 {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: var(--purple);
   margin-bottom: 14px;
 }
 .attempt-record dl {
   display: grid;
   grid-template-columns: 145px 1fr;
-  font-size: 12px;
+  font-size: 0.75rem;
   gap: 10px 20px;
 }
 .attempt-record dt {
-  font-size: 10px;
+  font-size: 0.625rem;
 }
 .attempt-record dd {
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
 .record-notes {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: var(--muted);
   margin-top: 17px;
 }
 .record-notes strong {
-  font-size: 10px;
-  color: #d1dced;
+  font-size: 0.625rem;
+  color: var(--text);
 }
 .record-notes p {
   white-space: pre-wrap;
@@ -461,14 +461,14 @@ dialog > p strong {
   margin: 23px 0;
 }
 .report details {
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 .text-summary {
   width: 100%;
   height: 300px;
   display: block;
   margin-top: 20px;
-  font-size: 11px;
+  font-size: 0.6875rem;
 }
 /* Adapt without hiding any learning or profile controls. */
 @media (min-width: 1650px) {
@@ -483,10 +483,10 @@ dialog > p strong {
     padding: 21px 22px;
   }
   .stat > span {
-    font-size: 12px;
+    font-size: 0.75rem;
   }
   .stat > small {
-    font-size: 10px;
+    font-size: 0.625rem;
   }
   .brief-content {
     padding: 32px;
@@ -495,10 +495,10 @@ dialog > p strong {
     grid-template-columns: 1fr 290px;
   }
   .brief h2 {
-    font-size: 28px;
+    font-size: 1.75rem;
   }
   .brief p {
-    font-size: 13px;
+    font-size: 0.8125rem;
   }
   .dashboard-grid,
   .dashboard-lower {
@@ -508,16 +508,16 @@ dialog > p strong {
     padding: 18px 20px;
   }
   .ticket-link {
-    font-size: 13px;
+    font-size: 0.8125rem;
   }
   .ticket-table {
-    font-size: 12px;
+    font-size: 0.75rem;
   }
   .ticket-layout {
     grid-template-columns: minmax(0, 1.3fr) minmax(360px, 0.8fr);
   }
   .tabs > button {
-    font-size: 11px;
+    font-size: 0.6875rem;
     padding-left: 15px;
     padding-right: 15px;
   }
@@ -527,7 +527,7 @@ dialog > p strong {
   }
   .component-choice,
   .action-choices label {
-    font-size: 12px;
+    font-size: 0.75rem;
   }
 }
 @media (max-width: 1250px) {
@@ -542,14 +542,14 @@ dialog > p strong {
     gap: 8px;
   }
   .brand strong {
-    font-size: 12px;
+    font-size: 0.75rem;
   }
   .workspace-label {
     padding-left: 19px;
-    font-size: 8px;
+    font-size: 0.5rem;
   }
   .sidebar nav a {
-    font-size: 12px;
+    font-size: 0.75rem;
   }
   .main-content {
     padding: 26px 23px;
@@ -571,10 +571,10 @@ dialog > p strong {
     padding: 15px 12px;
   }
   .stat > span {
-    font-size: 10px;
+    font-size: 0.625rem;
   }
   .stat > small {
-    font-size: 8px;
+    font-size: 0.5rem;
   }
   .dashboard-grid,
   .dashboard-lower {
@@ -596,13 +596,13 @@ dialog > p strong {
     min-height: 185px;
   }
   .brief h2 {
-    font-size: 22px;
+    font-size: 1.375rem;
   }
   .brief p {
-    font-size: 11px;
+    font-size: 0.6875rem;
   }
   .brief-tags {
-    font-size: 8px;
+    font-size: 0.5rem;
     gap: 9px;
   }
   .dashboard-queue .ticket-table th:nth-child(2),
@@ -632,7 +632,7 @@ dialog > p strong {
     display: none;
   }
   .page-heading .date-label {
-    font-size: 10px;
+    font-size: 0.625rem;
   }
   .report .page-heading {
     flex-wrap: wrap;
@@ -650,7 +650,7 @@ dialog > p strong {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
   .stats-grid .stat > span {
-    font-size: 11px;
+    font-size: 0.6875rem;
   }
   .dashboard-grid {
     grid-template-columns: 1fr;
@@ -685,7 +685,7 @@ dialog > p strong {
     grid-column: 1/-1;
   }
   .ticket-title h1 {
-    font-size: 24px;
+    font-size: 1.5rem;
   }
   .topbar-right .top-resolved {
     display: none;
@@ -701,7 +701,7 @@ dialog > p strong {
     gap: 40px;
   }
   .start-story h1 {
-    font-size: 34px;
+    font-size: 2.125rem;
   }
   .start-panel {
     padding: 26px;
@@ -710,7 +710,7 @@ dialog > p strong {
     padding-top: 40px;
   }
   .confidence-list .badge {
-    font-size: 9px;
+    font-size: 0.5625rem;
   }
 }
 @media (max-width: 800px) {
@@ -740,7 +740,7 @@ dialog > p strong {
     gap: 14px;
   }
   .topbar .top-score {
-    font-size: 11px;
+    font-size: 0.6875rem;
   }
   .main-content {
     padding: 25px 20px;
@@ -762,30 +762,30 @@ dialog > p strong {
     padding: 0 24px;
   }
   .start-top .local-label {
-    font-size: 7px;
+    font-size: 0.4375rem;
     letter-spacing: 0.6px;
   }
   .start-story h1 {
-    font-size: 29px;
+    font-size: 1.8125rem;
   }
   .start-intro {
-    font-size: 14px;
+    font-size: 0.875rem;
   }
   .start-pack {
     gap: 12px;
     margin-top: 25px;
   }
   .pack-number {
-    font-size: 32px;
+    font-size: 2rem;
   }
   .start-pack h2 {
-    font-size: 15px;
+    font-size: 0.9375rem;
   }
   .start-pack .eyebrow {
-    font-size: 7px;
+    font-size: 0.4375rem;
   }
   .start-pack p {
-    font-size: 9px;
+    font-size: 0.5625rem;
   }
   .start-story .compact {
     width: 200px;
@@ -796,13 +796,13 @@ dialog > p strong {
     padding: 22px;
   }
   .start-panel h2 {
-    font-size: 21px;
+    font-size: 1.3125rem;
   }
   .start-panel > .muted {
-    font-size: 11px;
+    font-size: 0.6875rem;
   }
   .privacy-note {
-    font-size: 9px;
+    font-size: 0.5625rem;
   }
   .report-cover {
     padding: 23px;
@@ -816,7 +816,7 @@ dialog > p strong {
 }
 @media (max-width: 620px) {
   h1 {
-    font-size: 26px;
+    font-size: 1.625rem;
   }
   .start-top .local-label {
     display: none;
@@ -830,7 +830,7 @@ dialog > p strong {
     padding: 0 20px;
   }
   .start-story h1 {
-    font-size: 32px;
+    font-size: 2rem;
     line-height: 1.2;
   }
   .start-story .compact,
@@ -838,7 +838,7 @@ dialog > p strong {
     display: none;
   }
   .start-intro {
-    font-size: 14px;
+    font-size: 0.875rem;
     margin-top: 12px;
   }
   .start-pack {
@@ -846,13 +846,13 @@ dialog > p strong {
     padding-bottom: 20px;
   }
   .start-pack h2 {
-    font-size: 18px;
+    font-size: 1.125rem;
   }
   .start-pack .eyebrow {
-    font-size: 8px;
+    font-size: 0.5rem;
   }
   .start-pack p {
-    font-size: 10px;
+    font-size: 0.625rem;
   }
   .start-form-column {
     padding-top: 0;
@@ -869,11 +869,11 @@ dialog > p strong {
     gap: 12px;
   }
   .college-name {
-    font-size: 11px;
+    font-size: 0.6875rem;
   }
   .user-menu > span:last-child {
     max-width: 85px;
-    font-size: 10px;
+    font-size: 0.625rem;
   }
   .user-menu .avatar {
     width: 28px;
@@ -898,13 +898,13 @@ dialog > p strong {
     margin-bottom: 22px;
   }
   .page-heading h1 {
-    font-size: 26px;
+    font-size: 1.625rem;
   }
   .page-heading p {
-    font-size: 12px;
+    font-size: 0.75rem;
   }
   .eyebrow {
-    font-size: 9px;
+    font-size: 0.5625rem;
   }
   .stats-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -915,13 +915,13 @@ dialog > p strong {
     padding: 15px;
   }
   .stat > strong {
-    font-size: 28px;
+    font-size: 1.75rem;
   }
   .stat > small {
-    font-size: 9px;
+    font-size: 0.5625rem;
   }
   .stats-grid .stat > span {
-    font-size: 10px;
+    font-size: 0.625rem;
   }
   .stats-grid:not(.report-stats) .stat:last-child {
     grid-column: 1/-1;
@@ -947,16 +947,16 @@ dialog > p strong {
     padding: 23px;
   }
   .brief h2 {
-    font-size: 24px;
+    font-size: 1.5rem;
   }
   .brief p {
-    font-size: 12px;
+    font-size: 0.75rem;
   }
   .brief-visual {
     display: none;
   }
   .brief-tags {
-    font-size: 9px;
+    font-size: 0.5625rem;
   }
   .dashboard-lower {
     grid-template-columns: 1fr;
@@ -977,25 +977,25 @@ dialog > p strong {
     padding: 18px;
   }
   .panel-header .text-button {
-    font-size: 10px;
+    font-size: 0.625rem;
     white-space: nowrap;
   }
   .table-ticket-id {
-    font-size: 8px;
+    font-size: 0.5rem;
   }
   .ticket-link {
-    font-size: 11px;
+    font-size: 0.6875rem;
   }
   .ticket-table th,
   .ticket-table td {
     padding: 13px 11px;
   }
   .ticket-table .table-detail {
-    font-size: 8px;
+    font-size: 0.5rem;
   }
   .quiet-footer {
     align-items: flex-start;
-    font-size: 9px;
+    font-size: 0.5625rem;
     justify-content: flex-start;
   }
   .quiet-footer svg {
@@ -1007,7 +1007,7 @@ dialog > p strong {
   .app-footer {
     margin: 0 15px;
     gap: 12px;
-    font-size: 7px;
+    font-size: 0.4375rem;
     letter-spacing: 0.7px;
   }
   .tier-strip {
@@ -1017,7 +1017,7 @@ dialog > p strong {
     padding-left: 10px;
   }
   .tier-strip > div > span:last-child {
-    font-size: 9px;
+    font-size: 0.5625rem;
   }
   .queue-toolbar {
     padding: 13px;
@@ -1035,7 +1035,7 @@ dialog > p strong {
     flex: 1;
   }
   .unlock-explanation {
-    font-size: 10px;
+    font-size: 0.625rem;
     align-items: flex-start;
   }
   .unlock-explanation svg {
@@ -1052,13 +1052,13 @@ dialog > p strong {
     padding: 23px;
   }
   .library-card > p {
-    font-size: 13px;
+    font-size: 0.8125rem;
   }
   .library-card h3 {
-    font-size: 12px;
+    font-size: 0.75rem;
   }
   .misconception p {
-    font-size: 12px;
+    font-size: 0.75rem;
   }
   .performance-summary {
     grid-template-columns: 1fr;
@@ -1067,7 +1067,7 @@ dialog > p strong {
     padding: 22px;
   }
   .big-number {
-    font-size: 45px;
+    font-size: 2.8125rem;
     margin: 16px 0;
   }
   .confidence-list > div {
@@ -1086,7 +1086,7 @@ dialog > p strong {
     gap: 16px;
   }
   .ticket-title h1 {
-    font-size: 25px;
+    font-size: 1.5625rem;
   }
   .ticket-badges {
     flex-direction: row;
@@ -1094,10 +1094,10 @@ dialog > p strong {
     gap: 13px;
   }
   .ticket-title p {
-    font-size: 12px;
+    font-size: 0.75rem;
   }
   .tabs > button {
-    font-size: 10px;
+    font-size: 0.625rem;
     padding: 16px 11px;
   }
   .tab-content {
@@ -1107,7 +1107,7 @@ dialog > p strong {
     flex-wrap: wrap;
   }
   .requester span {
-    font-size: 10px;
+    font-size: 0.625rem;
   }
   .ticket-meta {
     grid-template-columns: 1fr 1fr;
@@ -1136,7 +1136,7 @@ dialog > p strong {
     gap: 10px;
   }
   .ticket-checklist span {
-    font-size: 10px;
+    font-size: 0.625rem;
   }
   .workstation {
     height: 365px;
@@ -1144,7 +1144,7 @@ dialog > p strong {
     margin-top: 22px;
   }
   .pc-part {
-    font-size: 9px;
+    font-size: 0.5625rem;
     padding: 4px;
   }
   .pc-part svg {
@@ -1152,24 +1152,24 @@ dialog > p strong {
     height: 21px;
   }
   .part-case-cooling {
-    font-size: 7px;
+    font-size: 0.4375rem;
   }
   .part-cpu-cooling {
-    font-size: 8px;
+    font-size: 0.5rem;
   }
   .part-cpu-cooling svg {
     width: 17px;
     height: 17px;
   }
   .part-motherboard {
-    font-size: 8px;
+    font-size: 0.5rem;
   }
   .part-motherboard svg {
     width: 14px;
     height: 14px;
   }
   .case-caption {
-    font-size: 6px;
+    font-size: 0.375rem;
     letter-spacing: 0.5px;
     left: 8px;
     right: 8px;
@@ -1182,23 +1182,23 @@ dialog > p strong {
     padding: 22px;
   }
   .component-choice {
-    font-size: 12px;
+    font-size: 0.75rem;
   }
   .action-choices label {
-    font-size: 12px;
+    font-size: 0.75rem;
   }
   .diagnosis-form .field > span {
-    font-size: 13px;
+    font-size: 0.8125rem;
   }
   .report-cover {
     flex-direction: column;
     gap: 20px;
   }
   .report-dates {
-    font-size: 11px;
+    font-size: 0.6875rem;
   }
   .report-cover h2 {
-    font-size: 25px;
+    font-size: 1.5625rem;
   }
   .report-columns {
     grid-template-columns: 1fr;
@@ -1229,10 +1229,10 @@ dialog > p strong {
     margin-bottom: 13px;
   }
   .report-columns p {
-    font-size: 13px;
+    font-size: 0.8125rem;
   }
   .report-columns h4 {
-    font-size: 12px;
+    font-size: 0.75rem;
   }
   .storage-warning {
     margin: 12px 15px 0;
@@ -1241,12 +1241,12 @@ dialog > p strong {
   }
   .override-banner {
     padding: 9px 15px;
-    font-size: 10px;
+    font-size: 0.625rem;
   }
   .toast {
     bottom: 15px;
     padding: 12px;
-    font-size: 12px;
+    font-size: 0.75rem;
   }
   .modal-actions {
     flex-direction: column;
@@ -1258,7 +1258,7 @@ dialog > p strong {
     padding: 23px;
   }
   .report-cover .eyebrow {
-    font-size: 9px;
+    font-size: 0.5625rem;
   }
 }
 @media (prefers-reduced-motion: reduce) {

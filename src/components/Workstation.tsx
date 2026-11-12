@@ -11,6 +11,7 @@ import {
   Monitor,
 } from "lucide-react";
 import type { ComponentInfo } from "../types.ts";
+import DiagramMagnifier from "./DiagramMagnifier.tsx";
 
 export function ComponentIcon({
   component,
@@ -75,7 +76,7 @@ export default function Workstation({
         )}
       </div>
     );
-  return (
+  const diagram = (
     <div
       className={`workstation ${compact ? "compact" : ""}`}
       aria-label={
@@ -109,6 +110,7 @@ export default function Workstation({
             key={c.id}
             type="button"
             className={`pc-part part-${c.diagram} ${selected === c.id ? "selected" : ""}`}
+            data-diagram-part={c.id}
             aria-label={`Inspect ${c.shortName}`}
             aria-pressed={selected === c.id}
             onClick={() => onSelect?.(c.id)}
@@ -126,5 +128,33 @@ export default function Workstation({
         <i />
       </div>
     </div>
+  );
+  if (compact || !onSelect) return diagram;
+
+  const component = components.find(({ id }) => id === selected);
+  return (
+    <>
+      <div className="workstation-tools">
+        <DiagramMagnifier
+          title="Workstation diagram"
+          diagram={diagram}
+          selectionLabel="Component"
+          items={components.map(({ id, shortName }) => ({
+            id,
+            label: shortName,
+          }))}
+          selected={selected}
+          onSelect={onSelect}
+          details={component && (
+            <>
+              <h3>{component.name}</h3>
+              <p>{component.function}</p>
+              <p>{component.need}</p>
+            </>
+          )}
+        />
+      </div>
+      {diagram}
+    </>
   );
 }

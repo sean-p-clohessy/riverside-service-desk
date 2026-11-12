@@ -25,6 +25,8 @@ Open the address Vite prints, including `/riverside-service-desk/`. Production o
 
 Start or choose a local profile. Open a ticket to assign it. Read the report and specification, inspect the equipment, gather evidence and save notes. Submit a hardware choice, function explanation, evidence-based reasoning and next step. Week 7 unlocks tickets in tiers. All Week 8 requests are available for pairs to choose.
 
+Open **Accessibility** at check-in or during a shift for colour scheme and text size. These preferences are saved in the browser. **Reset display settings** restores Dark and Standard. Choose **Magnify** beside an interactive diagram to enlarge it, pan within the view or select from the labelled parts list.
+
 The best attempt per ticket counts: component identification earns 5/3/1 points on successive attempts, function 3, reasoning 3, next step 2, minus 1 per hint. A ticket resolves when all four checks pass. Written feedback checks key ideas locally; tutors should review the original responses. It is not an official assessment result.
 
 ## Local profiles and portability

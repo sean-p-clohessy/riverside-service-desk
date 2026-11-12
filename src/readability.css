@@ -4,53 +4,53 @@
 }
 /* Learning text remains readable at ordinary desktop zoom. */
 .library-card > p {
-  font-size: 13px;
+  font-size: 0.8125rem;
 }
 .library-card > h3 {
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 .misconception p {
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 .diagnosis-form .field > span {
-  font-size: 13px;
+  font-size: 0.8125rem;
 }
 .diagnosis-form .field textarea {
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 .action-choices label {
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 .component-choice {
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 .feedback-row > div {
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 .feedback-row p {
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 .tab-content > .small {
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 .evidence-source p {
-  font-size: 13px;
+  font-size: 0.8125rem;
 }
 .component-detail {
-  font-size: 13px;
+  font-size: 0.8125rem;
 }
 .component-detail .small {
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 .machine-spec > div {
-  font-size: 13px;
+  font-size: 0.8125rem;
 }
 .profile-row {
   display: flex;
   flex-direction: column;
-  border: 1px solid #3c4761;
+  border: 1px solid var(--control-line);
   border-radius: 5px;
-  background: #1d2639;
+  background: var(--panel-raised);
 }
 .profile-list .profile-select {
   border: 0;
@@ -65,11 +65,11 @@
   padding: 7px 13px;
   margin-bottom: 4px;
   background: transparent;
-  color: #d3badc;
-  font-size: 10px;
+  color: var(--purple);
+  font-size: 0.625rem;
   border-radius: 4px;
 }
 .profile-reset:hover {
-  background: #3b2a43;
-  color: #fff;
+  background: var(--purple-tint);
+  color: var(--text);
 }
