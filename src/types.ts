@@ -57,7 +57,7 @@ export interface ScenarioPack {
   brief: string;
   tiers: { name: string; description: string }[];
   inspectionMode?: "workstation" | "catalog";
-  lab?: "peripherals";
+  lab?: "peripherals" | "network";
   components: ComponentInfo[];
   tickets: Ticket[];
   practiceIds?: string[];
@@ -94,6 +94,17 @@ export interface TeacherSettings {
   hints: boolean;
   order: "sequential" | "random";
 }
+export interface NetworkTest {
+  source: "pc" | "laptop";
+  target: "link" | "printer" | "files" | "internet";
+  links: string[];
+  at: string;
+}
+export interface NetworkProgress {
+  links: string[];
+  tests: NetworkTest[];
+  descriptions: { component: string; text: string }[];
+}
 export interface Profile {
   schemaVersion: 1;
   id: string;
@@ -107,6 +118,7 @@ export interface Profile {
   settings: TeacherSettings;
   inspected: string[];
   practice?: { passed: string[]; comparison: string };
+  network?: NetworkProgress;
   unlockedTickets: string[];
   statistics: { shifts: number; visits: number; submissions: number };
 }

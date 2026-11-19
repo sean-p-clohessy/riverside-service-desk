@@ -4,8 +4,11 @@ import type {
   Profile,
   ScenarioPack,
   TicketProgress,
+  NetworkTest,
 } from "../types.ts";
 import { syncProgress } from "./engine.ts";
+import { emptyNetwork } from "./network.ts";
+import { networkLinks } from "../data/week9Network.ts";
 
 export const PROFILE_PREFIX = "riverside.service-desk.v1.profile.";
 export const ACTIVE_KEY = "riverside.service-desk.v1.active";
@@ -90,6 +93,57 @@ export function validateProfile(value: unknown, pack: ScenarioPack): Profile {
         comparison: v.practice.comparison,
       };
     } else return fail();
+  }
+  let network: Profile["network"];
+  if (pack.lab === "network") {
+    if (v.network === undefined) network = emptyNetwork();
+    else {
+      const n = v.network;
+      const linkIds = networkLinks.map((link) => link.id);
+      if (
+        !record(n) ||
+        !strings(n.links, linkIds) ||
+        !Array.isArray(n.tests) ||
+        n.tests.length > 8 ||
+        !Array.isArray(n.descriptions) ||
+        n.descriptions.length !== 3
+      )
+        return fail();
+      const tests: NetworkTest[] = n.tests.map((test) => {
+        if (
+          !record(test) ||
+          !["pc", "laptop"].includes(test.source as string) ||
+          !["link", "printer", "files", "internet"].includes(
+            test.target as string,
+          ) ||
+          !strings(test.links, linkIds) ||
+          !date(test.at)
+        )
+          return fail();
+        return {
+          source: test.source as NetworkTest["source"],
+          target: test.target as NetworkTest["target"],
+          links: [...test.links],
+          at: test.at,
+        };
+      });
+      if (
+        new Set(tests.map((test) => `${test.source}/${test.target}`)).size !==
+        tests.length
+      )
+        return fail();
+      const descriptions = n.descriptions.map((description) => {
+        if (
+          !record(description) ||
+          !str(description.component, 100) ||
+          !componentIds.includes(description.component) ||
+          !str(description.text, 2000)
+        )
+          return fail();
+        return { component: description.component, text: description.text };
+      });
+      network = { links: [...n.links], tests, descriptions };
+    }
   }
   const readDiagnosis = (d: unknown, actions: string[]): Diagnosis => {
     if (
@@ -179,6 +233,7 @@ export function validateProfile(value: unknown, pack: ScenarioPack): Profile {
       order: [...v.order],
       inspected: [...v.inspected],
       ...(practice ? { practice } : {}),
+      ...(network ? { network } : {}),
       unlockedTickets: [...v.unlockedTickets],
       settings: {
         unlockAll: v.settings.unlockAll as boolean,

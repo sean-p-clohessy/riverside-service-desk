@@ -62,7 +62,16 @@ import Report from "./components/Report.tsx";
 import PeripheralLab, { DeskPreview } from "./components/PeripheralLab.tsx";
 import AccessibilitySettings from "./components/AccessibilitySettings.tsx";
 import Modal from "./components/Modal.tsx";
-import { labViews, landingView, parseRoute, routeHref } from "./lib/routes.ts";
+import NetworkLab from "./components/NetworkLab.tsx";
+import NetworkDiagram from "./components/NetworkDiagram.tsx";
+import { networkStartLinks } from "./data/week9Network.ts";
+import {
+  labViews,
+  landingView,
+  networkViews,
+  parseRoute,
+  routeHref,
+} from "./lib/routes.ts";
 
 const navItems = [
   { id: "dashboard", name: "Dashboard", Icon: LayoutDashboard },
@@ -117,6 +126,7 @@ export default function App() {
   const pack = scenarioPacks[route.packId];
   const view = route.view;
   const isPeripherals = pack.lab === "peripherals";
+  const isNetwork = pack.lab === "network";
   const [initial] = useState(() => readCourseProfiles(coursePacks));
   const [records, setRecords] = useState<Profile[]>(initial.profiles);
   const recordsRef = useRef(records);
@@ -619,13 +629,17 @@ export default function App() {
                 <span className="eyebrow">THIS WEEK’S ASSIGNMENT</span>
                 <h2>{pack.title}</h2>
                 <p>
-                  {isPeripherals
-                    ? "12 devices to explore · 90-minute lesson"
-                    : `${pack.tickets.length} tickets · ${pack.tiers.length} skill tiers`}
+                  {isNetwork
+                    ? "College network · 90-minute lesson"
+                    : isPeripherals
+                      ? "12 devices to explore · 90-minute lesson"
+                      : `${pack.tickets.length} tickets · ${pack.tiers.length} skill tiers`}
                 </p>
               </div>
             </div>
-            {isPeripherals ? (
+            {isNetwork ? (
+              <NetworkDiagram links={networkStartLinks} />
+            ) : isPeripherals ? (
               <DeskPreview />
             ) : (
               <Workstation
@@ -787,7 +801,10 @@ export default function App() {
               (id === "queue" && ticket) ||
               (id === "dashboard" &&
                 isPeripherals &&
-                (labViews.includes(view) || view === "dashboard"));
+                (labViews.includes(view) || view === "dashboard")) ||
+              (id === "dashboard" &&
+                isNetwork &&
+                (networkViews.includes(view) || view === "dashboard"));
             return (
               <a
                 key={id}
@@ -803,9 +820,11 @@ export default function App() {
               >
                 <Icon size={18} />
                 <span>
-                  {isPeripherals && id === "dashboard"
-                    ? "Peripherals Lab"
-                    : label}
+                  {isNetwork && id === "dashboard"
+                    ? "Network Lab"
+                    : isPeripherals && id === "dashboard"
+                      ? "Peripherals Lab"
+                      : label}
                 </span>
                 {id === "queue" && <span className="nav-count">{s.open}</span>}
               </a>
@@ -929,6 +948,15 @@ export default function App() {
           className="main-content"
           tabIndex={-1}
         >
+          {isNetwork &&
+            (networkViews.includes(view) || view === "dashboard") && (
+              <NetworkLab
+                pack={pack}
+                profile={profile}
+                view={view}
+                update={update}
+              />
+            )}
           {isPeripherals &&
             (labViews.includes(view) || view === "dashboard") && (
               <PeripheralLab
@@ -939,7 +967,7 @@ export default function App() {
                 navigate={navigate}
               />
             )}
-          {!isPeripherals && view === "dashboard" && (
+          {!pack.lab && view === "dashboard" && (
             <>
               <div className="page-heading">
                 <div>
@@ -1203,7 +1231,7 @@ export default function App() {
                   <h1>{view === "queue" ? "Ticket Queue" : "My Tickets"}</h1>
                   <p>
                     {view === "queue"
-                      ? isPeripherals
+                      ? pack.lab
                         ? "Choose two requests with a partner. Take turns as technician and verifier."
                         : "Investigate the request. Gather evidence. Make a supported decision."
                       : "Your assigned and resolved requests, all in one place."}
@@ -1435,7 +1463,11 @@ export default function App() {
                 profile={profile}
                 pack={pack}
                 onExplore={
-                  isPeripherals ? () => navigate("explore") : undefined
+                  isNetwork
+                    ? () => navigate("network")
+                    : isPeripherals
+                      ? () => navigate("explore")
+                      : undefined
                 }
                 update={update}
                 teacher={teacher}

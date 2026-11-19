@@ -9,6 +9,11 @@ import {
   Network,
   Fan,
   Monitor,
+  Router,
+  Wifi,
+  Printer,
+  Server,
+  Cable,
 } from "lucide-react";
 import type { ComponentInfo } from "../types.ts";
 import DiagramMagnifier from "./DiagramMagnifier.tsx";
@@ -32,7 +37,16 @@ export function ComponentIcon({
     "cpu-cooling": Fan,
     "case-cooling": Fan,
   };
-  const Icon = icons[component.diagram] ?? Monitor;
+  const networkIcons: Record<string, typeof Cpu> = {
+    "network-router": Router,
+    "access-point": Wifi,
+    "network-printer": Printer,
+    "file-server": Server,
+    "ethernet-link": Cable,
+    "provider-link": Cable,
+  };
+  const Icon =
+    networkIcons[component.id] ?? icons[component.diagram] ?? Monitor;
   return <Icon size={size} aria-hidden="true" strokeWidth={1.6} />;
 }
 export default function Workstation({
@@ -145,13 +159,15 @@ export default function Workstation({
           }))}
           selected={selected}
           onSelect={onSelect}
-          details={component && (
-            <>
-              <h3>{component.name}</h3>
-              <p>{component.function}</p>
-              <p>{component.need}</p>
-            </>
-          )}
+          details={
+            component && (
+              <>
+                <h3>{component.name}</h3>
+                <p>{component.function}</p>
+                <p>{component.need}</p>
+              </>
+            )
+          }
         />
       </div>
       {diagram}

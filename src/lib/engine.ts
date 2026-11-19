@@ -7,6 +7,7 @@ import type {
   TicketProgress,
   ConceptRubric,
 } from "../types.ts";
+import { emptyNetwork, networkEvidence } from "./network.ts";
 
 export const emptyDiagnosis = (): Diagnosis => ({
   components: [],
@@ -42,6 +43,7 @@ export function createProfile(name: string, pack: ScenarioPack): Profile {
     },
     inspected: [],
     ...(pack.practiceIds ? { practice: { passed: [], comparison: "" } } : {}),
+    ...(pack.lab === "network" ? { network: emptyNetwork() } : {}),
     unlockedTickets: [],
     statistics: { shifts: 1, visits: 1, submissions: 0 },
   };
@@ -260,8 +262,18 @@ export function evidenceSummary(profile: Profile, pack: ScenarioPack): string {
     `Components encountered: ${names([...new Set([...profile.inspected, ...pack.tickets.filter((t) => profile.tickets[t.id]?.attempts.length).flatMap((t) => t.expected)])]) || "None yet"}`,
     ...(pack.practiceIds
       ? [
-          `Connection checks: ${profile.practice?.passed.length ?? 0}/${pack.practiceIds.length}`,
-          `Individual comparison: ${profile.practice?.comparison.trim() || "None yet"}`,
+          `${pack.lab === "network" ? "Guide" : "Connection"} checks: ${profile.practice?.passed.length ?? 0}/${pack.practiceIds.length}`,
+          `${pack.lab === "network" ? "My network explanation" : "Individual comparison"}: ${profile.practice?.comparison.trim() || "None yet"}`,
+        ]
+      : []),
+    ...(pack.lab === "network" && profile.network
+      ? [
+          "Network tests and routes",
+          ...networkEvidence(profile.network),
+          ...profile.network.descriptions.map(
+            (description, i) =>
+              `Device ${i + 1} — ${names([description.component])}: ${description.text.trim() || "Description still to write"}`,
+          ),
         ]
       : []),
     `Strengths: ${
@@ -291,7 +303,19 @@ export function evidenceSummary(profile: Profile, pack: ScenarioPack): string {
             `Next step: ${t.actions.find((x) => x.id === a.action)?.label ?? ""}`,
             `Checks: component ${a.componentCorrect ? "correct" : "review"}; function ${a.functionCorrect ? "met" : "review"}; reasoning ${a.reasoningCorrect ? "met" : "review"}; action ${a.actionCorrect ? "met" : "review"}. Hints: ${a.hintsUsed}`,
           ]),
-          `Evidence gathered: ${p.evidence.map((id) => t.evidence.find((e) => e.id === id)?.title).join("; ") || "None"}`,
+          `Evidence gathered: ${
+            p.evidence
+              .map((id) => {
+                const source = t.evidence.find((e) => e.id === id);
+                return (
+                  source &&
+                  (pack.lab === "network"
+                    ? `${source.title} — ${source.body}`
+                    : source.title)
+                );
+              })
+              .join("; ") || "None"
+          }`,
           `Technician notes: ${p.notes || "None"}`,
         ];
       }),

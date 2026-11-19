@@ -63,7 +63,7 @@ export default function TicketView({
   const attempt = p.attempts.at(-1);
   const showFeedback = !!attempt && !editing;
   const selected = pack.components.find((c) => c.id === part);
-  const pairGroups = onExplore && [
+  const pairGroups = pack.lab === "peripherals" && [
     { label: "Peripheral outside the case", options: peripherals },
     {
       label: "Component inside the case",
@@ -288,7 +288,10 @@ export default function TicketView({
                       type="button"
                       onClick={onExplore}
                     >
-                      Open the peripherals lab <ArrowRight size={15} />
+                      {pack.lab === "network"
+                        ? "Open the college network"
+                        : "Open the peripherals lab"}{" "}
+                      <ArrowRight size={15} />
                     </button>
                   )}
                   <Workstation
@@ -325,14 +328,19 @@ export default function TicketView({
               {tab === "Evidence" && (
                 <>
                   <div className="section-heading">
-                    <h2>Evidence desk</h2>
+                    <h2>
+                      {pack.lab === "network"
+                        ? "Simulated network checks"
+                        : "Evidence desk"}
+                    </h2>
                     <span className="small muted">
                       {p.evidence.length} / {ticket.evidence.length} gathered
                     </span>
                   </div>
                   <p className="small muted">
-                    Open each source to add it to your investigation. Use the
-                    details to support your reasoning.
+                    {pack.lab === "network"
+                      ? "Choose a check to run in this ticket's scenario. Compare the results before deciding on a next step."
+                      : "Open each source to add it to your investigation. Use the details to support your reasoning."}
                   </p>
                   <div className="evidence-list">
                     {ticket.evidence.map((e) => {
@@ -367,7 +375,9 @@ export default function TicketView({
                                 }))
                               }
                             >
-                              Gather evidence
+                              {pack.lab === "network"
+                                ? `Run ${e.title.toLowerCase()}`
+                                : "Gather evidence"}
                               <ArrowRight size={15} />
                             </button>
                           )}
@@ -691,13 +701,14 @@ export default function TicketView({
                         : "Describe its main function in your own words…"
                     }
                   />
-                  {pairGroups && ticket.functionRubric.criteria && (
-                    <ul className="reasoning-criteria">
-                      {ticket.functionRubric.criteria.map((idea) => (
-                        <li key={idea}>{idea}</li>
-                      ))}
-                    </ul>
-                  )}
+                  {(pairGroups || pack.lab === "network") &&
+                    ticket.functionRubric.criteria && (
+                      <ul className="reasoning-criteria">
+                        {ticket.functionRubric.criteria.map((idea) => (
+                          <li key={idea}>{idea}</li>
+                        ))}
+                      </ul>
+                    )}
                 </label>
                 <label className="field">
                   <span>

@@ -26,7 +26,10 @@ const exportJson = (profile: unknown) =>
   JSON.stringify({ format: "riverside-progress", version: 1, profile });
 
 test("Week 8 can be opened directly and existing Week 7 bookmarks resolve to the archive", () => {
-  assert.deepEqual(parseRoute(""), { packId: week8.id, view: "explore" });
+  assert.deepEqual(parseRoute("#week-8/explore"), {
+    packId: week8.id,
+    view: "explore",
+  });
   assert.deepEqual(parseRoute("#dashboard"), {
     packId: pack.id,
     view: "dashboard",

@@ -2,6 +2,7 @@ import type { ScenarioPack } from "../types.ts";
 import { activePackId, coursePacks, scenarioPacks } from "../data/config.ts";
 
 export const labViews = ["explore", "ports", "inside", "lesson"];
+export const networkViews = ["lesson", "network-guide", "network"];
 const deskViews = [
   "dashboard",
   "queue",
@@ -11,7 +12,11 @@ const deskViews = [
   "report",
 ];
 export const landingView = (pack: ScenarioPack) =>
-  pack.lab === "peripherals" ? "explore" : "dashboard";
+  pack.lab === "network"
+    ? "lesson"
+    : pack.lab === "peripherals"
+      ? "explore"
+      : "dashboard";
 
 export function routeHref(pack: ScenarioPack, view = landingView(pack)) {
   return `#week-${pack.week}/${view}`;
@@ -32,7 +37,8 @@ export function parseRoute(hash: string): { packId: string; view: string } {
     view &&
     (deskViews.includes(view) ||
       ticket.test(view) ||
-      (pack.lab === "peripherals" && labViews.includes(view)))
+      (pack.lab === "peripherals" && labViews.includes(view)) ||
+      (pack.lab === "network" && networkViews.includes(view)))
   ) {
     return { packId: pack.id, view };
   }

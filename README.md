@@ -2,6 +2,7 @@
 
 A browser-only learning helpdesk for Gateway Level 2 IT Technical Support (J/618/3687).
 
+- [Week 9 · Networking](https://edutools.uk/itsupport/#week-9/lesson) provides a 90-minute lesson, eleven component references, a network connection lab, five guide checks and four pair investigations. Each learner writes three device descriptions and an individual explanation. Their Session Report includes tested routes, results and ticket evidence.
 - [Week 8 · Peripherals](https://sean-p-clohessy.github.io/riverside-service-desk/#week-8/explore) opens the desk with 12 device references, 15 connection references, six connection checks and eight paired investigations. The [90-minute lesson](https://sean-p-clohessy.github.io/riverside-service-desk/#week-8/lesson) ends with an individual comparison in the session report.
 - [Week 7 · Inside the Workstation](https://sean-p-clohessy.github.io/riverside-service-desk/#week-7/dashboard) contains the archived diagram and all 12 original tickets.
 
@@ -31,11 +32,13 @@ The best attempt per ticket counts: component identification earns 5/3/1 points 
 
 ## Local profiles and portability
 
-One local profile opens both weeks. Each week stores its own tickets, notes and score. The Week 7 record retains its original storage key, and its old bookmarks and JSON exports still work. Refresh retains the current week and session.
+One local profile opens all available weeks. Each week stores its own tickets, notes and score. The Week 7 record retains its original storage key, and its old bookmarks and JSON exports still work. Refresh retains the current week and session.
 
 Use **Local profile & progress** to switch technicians, export or import JSON, reset a shift or delete a profile. Reset and export apply to the selected week. Deleting a profile removes its work across both weeks after confirmation. Import opens the week identified in the file.
 
 The **Session Report** includes all attempts, explanations, outcomes, notes, strengths and review areas. Copy a portfolio summary, export JSON, or use **Print / Save as PDF**.
+
+Week 9 network tests save the connections used when the check ran. The report preserves those results when connections are later changed. Each source and destination retains its latest test. Network tests are simulations in the browser.
 
 ## Teacher Mode
 

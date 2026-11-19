@@ -4,6 +4,8 @@ import { week7Tickets } from "./week7Tickets.ts";
 import { reasoningCriteria } from "./reasoningGuidance.ts";
 import { peripherals, portPractice } from "./week8Lab.ts";
 import { week8Tickets } from "./week8Tickets.ts";
+import { networkComponents, networkGuideChecks } from "./week9Network.ts";
+import { week9Tickets } from "./week9Tickets.ts";
 
 export const teacherPin = "2707"; // Local convenience control. Public source; NOT authentication.
 export const scenarioPacks: Record<string, ScenarioPack> = {
@@ -66,7 +68,29 @@ export const scenarioPacks: Record<string, ScenarioPack> = {
     tickets: week8Tickets,
     practiceIds: portPractice.map((check) => check.id),
   },
+  "week9-network": {
+    id: "week9-network",
+    version: 1,
+    week: 9,
+    title: "Networking components and connections",
+    subtitle: "Week 9",
+    unit: "Gateway Qualifications · Level 2 IT Technical Support · J/618/3687",
+    inspectionMode: "catalog",
+    lab: "network",
+    brief:
+      "Explore the college network, connect devices and test local resources and internet access. Investigate in pairs, then write your own evidence report.",
+    tiers: [
+      {
+        name: "Network investigations",
+        description:
+          "Choose two requests and swap technician and verifier roles.",
+      },
+    ],
+    components: networkComponents,
+    tickets: week9Tickets,
+    practiceIds: networkGuideChecks.map((check) => check.id),
+  },
 };
-export const activePackId = "week8-peripherals";
+export const activePackId = "week9-network";
 export const coursePacks = Object.values(scenarioPacks);
 export const pack = scenarioPacks["week7-workstation"];

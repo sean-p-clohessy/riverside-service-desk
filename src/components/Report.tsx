@@ -8,6 +8,7 @@ import {
 import type { Profile, ScenarioPack } from "../types.ts";
 import { componentPerformance, evidenceSummary, stats } from "../lib/engine.ts";
 import { exportProgress } from "../lib/storage.ts";
+import NetworkEvidence from "./NetworkEvidence.tsx";
 
 export default function Report({
   profile,
@@ -144,7 +145,8 @@ export default function Report({
           </p>
         </section>
       </div>
-      {pack.practiceIds && (
+      {pack.lab === "network" && <NetworkEvidence profile={profile} />}
+      {pack.lab === "peripherals" && pack.practiceIds && (
         <section className="panel padded lab-comparison-evidence">
           <h3>Week 8 practice evidence</h3>
           <p>
@@ -215,7 +217,15 @@ export default function Report({
                 <strong>Evidence gathered</strong>
                 <p>
                   {p.evidence
-                    .map((id) => t.evidence.find((e) => e.id === id)?.title)
+                    .map((id) => {
+                      const source = t.evidence.find((e) => e.id === id);
+                      return (
+                        source &&
+                        (pack.lab === "network"
+                          ? `${source.title} — ${source.body}`
+                          : source.title)
+                      );
+                    })
                     .join(" · ") || "None recorded"}
                 </p>
                 <strong>Technician notes</strong>
